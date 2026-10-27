@@ -30,8 +30,8 @@ img { display: block; max-width: 100%; }
 
 /* ── 공통 글 ─────────────────────────────────────────────── */
 .eyebrow {
-  margin: 0 0 18px;
-  font-size: 12px;
+  margin: 0 0 16px;
+  font-size: 13px;
   font-weight: 600;
   letter-spacing: 0.22em;
   text-transform: uppercase;
@@ -52,7 +52,7 @@ img { display: block; max-width: 100%; }
 }
 .headline .accent { color: var(--accent); }
 .subcopy {
-  margin: 22px 0 0;
+  margin: 24px 0 0;
   max-width: 30ch;
   font-size: clamp(16px, 1.25vw, 19px);
   color: var(--fg-dim);
@@ -81,15 +81,16 @@ img { display: block; max-width: 100%; }
   display: inline-flex;
   align-items: center;
   min-height: 44px;
-  padding: 0 22px;
+  padding: 0 24px;
   border-radius: 999px;
   background: var(--accent);
   color: #0a0a0b;
   font-weight: 700;
   font-size: 15px;
   text-decoration: none;
-  transition: transform 120ms var(--ease-out), background-color 150ms var(--ease-out);
+  transition: transform 120ms var(--ease-out), background-color 150ms var(--ease-out), opacity 200ms var(--ease-out);
 }
+.nav.is-at-cta .nav__cta { opacity: 0; pointer-events: none; }
 .nav__cta:active { transform: scale(0.97); }
 @media (hover: hover) and (pointer: fine) {
   .nav__cta:hover { background: color-mix(in srgb, var(--accent) 86%, white); }
@@ -167,15 +168,15 @@ img { display: block; max-width: 100%; }
   top: calc(var(--nav-h) + 16px);
   right: var(--gutter);
   margin: 0;
-  padding: 14px 18px;
+  padding: 16px;
   display: grid;
-  gap: 10px;
+  gap: 8px;
   min-width: 180px;
   background: rgb(10 10 11 / 0.62);
   border-left: 2px solid var(--accent);
 }
 .stats div { display: flex; justify-content: space-between; gap: 24px; }
-.stats dt { font-size: 11px; letter-spacing: 0.18em; color: var(--fg-dim); align-self: center; }
+.stats dt { font-size: 12px; letter-spacing: 0.18em; color: var(--fg-dim); align-self: center; }
 .stats dd { margin: 0; font-size: 15px; font-weight: 700; font-variant-numeric: tabular-nums; }
 
 /* ── picker ─────────────────────────────────────────────── */
@@ -202,6 +203,7 @@ img { display: block; max-width: 100%; }
 .picker__current {
   margin: 0;
   font-size: 13px;
+  min-height: 1.6em;
   letter-spacing: 0.16em;
   text-transform: uppercase;
   color: var(--fg-dim);
@@ -223,6 +225,7 @@ img { display: block; max-width: 100%; }
 }
 .swatch-btn:active { transform: scale(0.97); }
 .swatch-btn[aria-pressed='true'] { border-color: var(--accent); }
+.swatch-btn[aria-pressed='true'] .swatch-btn__chip { box-shadow: 0 0 0 2px var(--bg), 0 0 0 4px var(--accent); }
 .swatch-btn__chip {
   width: 28px;
   height: 28px;
@@ -265,11 +268,11 @@ img { display: block; max-width: 100%; }
 .cta__inner.pos-center .subcopy { margin-inline: auto; }
 .cta__inner .headline { font-size: clamp(80px, 17vw, 260px); }
 .cta__actions {
-  margin-top: 44px;
+  margin-top: 48px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 20px;
+  gap: 24px;
 }
 .cta__inner:not(.pos-center) .cta__actions { align-items: flex-start; }
 .btn-kakao {
@@ -308,7 +311,7 @@ img { display: block; max-width: 100%; }
 
 /* ── footer ─────────────────────────────────────────────── */
 .footer {
-  padding: 28px var(--gutter) 36px;
+  padding: 24px var(--gutter) 40px;
   border-top: 1px solid color-mix(in srgb, var(--fg) 12%, transparent);
   display: flex;
   flex-wrap: wrap;

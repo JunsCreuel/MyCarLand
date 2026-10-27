@@ -11,7 +11,7 @@ import { FrameSequence } from '../core/frames.js';
 import { CanvasRenderer } from '../core/renderer.js';
 import { frameSet, mobileQuery, prefersReducedMotion } from '../core/device.js';
 import { ScrollTrigger } from '../core/scroll.js';
-import { copyHtml, statsHtml } from './copy.js';
+import { copyHtml, escapeHtml, statsHtml } from './copy.js';
 
 export function createScrub(section, site, { isFirst }) {
   const reduced = prefersReducedMotion();
@@ -26,7 +26,7 @@ export function createScrub(section, site, { isFirst }) {
   el.style.setProperty('--scroll-length', reduced ? '100' : String(section.scrollLength));
   el.innerHTML = `
     <div class="scene__sticky">
-      <canvas class="scene__canvas" aria-hidden="true"></canvas>
+      <canvas class="scene__canvas" ${section.frames.alt ? `role="img" aria-label="${escapeHtml(section.frames.alt)}"` : 'aria-hidden="true"'}></canvas>
       <div class="scene__shade shade-${section.copy.position ?? 'left'}"></div>
       <div class="scene__copy pos-${section.copy.position ?? 'left'}">
         ${copyHtml(section.copy, isFirst ? 'h1' : 'h2')}

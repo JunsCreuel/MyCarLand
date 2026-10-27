@@ -52,7 +52,8 @@
       "frames": {
         "folder": "hero",
         "count": 108,
-        "ext": "webp"
+        "ext": "webp",
+        "alt": "멀리서 다가오는 청록색 포르쉐 911 타르가"
       },
       "copy": {
         "eyebrow": "PORSCHE 911 TARGA",
@@ -87,7 +88,8 @@
       "frames": {
         "folder": "detail",
         "count": 108,
-        "ext": "webp"
+        "ext": "webp",
+        "alt": "가까이에서 돌아보는 911 타르가의 휠과 실내"
       },
       "copy": {
         "eyebrow": "01 — DETAIL",
@@ -108,7 +110,8 @@
       "frames": {
         "folder": "drive",
         "count": 120,
-        "ext": "webp"
+        "ext": "webp",
+        "alt": "굽은 시골길을 달리는 911 타르가 두 대"
       },
       "copy": {
         "eyebrow": "02 — COUNTRY ROAD",

@@ -24,5 +24,18 @@ export function createNav(site) {
   };
   window.addEventListener('scroll', () => (raf ||= requestAnimationFrame(update)), { passive: true });
   update();
+
+  // 문의 섹션이 화면에 보이면 상단 문의 버튼을 숨긴다 (큰 카카오 버튼과 경쟁하지 않게)
+  if (ctaTarget) {
+    const watch = () => {
+      const target = document.getElementById(ctaTarget.id);
+      if (!target) return;
+      new IntersectionObserver(([entry]) => header.classList.toggle('is-at-cta', entry.isIntersecting), {
+        threshold: 0.35,
+      }).observe(target);
+    };
+    // 섹션이 DOM 에 붙은 뒤에 관찰해야 하므로 한 박자 미룬다
+    queueMicrotask(watch);
+  }
   return header;
 }
