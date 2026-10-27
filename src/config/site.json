@@ -48,12 +48,12 @@
     {
       "id": "hero",
       "type": "scrub",
-      "scrollLength": 300,
+      "scrollLength": 250,
       "frames": {
         "folder": "hero",
         "count": 120,
         "ext": "webp",
-        "alt": "멀리서 다가오는 청록색 포르쉐 911 타르가"
+        "alt": "가까이에서 돌아보는 911 타르가의 휠과 실내"
       },
       "copy": {
         "eyebrow": "PORSCHE 911 TARGA",
@@ -82,28 +82,6 @@
       ]
     },
     {
-      "id": "detail",
-      "type": "scrub",
-      "scrollLength": 250,
-      "frames": {
-        "folder": "detail",
-        "count": 120,
-        "ext": "webp",
-        "alt": "가까이에서 돌아보는 911 타르가의 휠과 실내"
-      },
-      "copy": {
-        "eyebrow": "01 — DETAIL",
-        "headline": "CLOSE ENOUGH\nTO TOUCH.",
-        "accentWord": "TOUCH.",
-        "subcopy": "휠, 타르가 바, 오렌지 가죽 시트. 매일 지나치던 디테일을 가장 가까이에서.",
-        "position": "right"
-      },
-      "copyRange": [
-        0.15,
-        0.85
-      ]
-    },
-    {
       "id": "drive",
       "type": "scrub",
       "scrollLength": 300,
@@ -114,7 +92,7 @@
         "alt": "굽은 시골길을 달리는 911 타르가 두 대"
       },
       "copy": {
-        "eyebrow": "02 — COUNTRY ROAD",
+        "eyebrow": "01 — COUNTRY ROAD",
         "headline": "TAKE THE\nLONG WAY.",
         "accentWord": "LONG WAY.",
         "subcopy": "곧은 길보다 굽은 길. 이 차가 가장 빛나는 순간.",
@@ -129,7 +107,7 @@
       "id": "finish",
       "type": "picker",
       "copy": {
-        "eyebrow": "03 — COLOR",
+        "eyebrow": "02 — COLOR",
         "headline": "PICK YOUR\nFINISH.",
         "accentWord": "FINISH.",
         "subcopy": "같은 차, 다른 분위기. 색을 골라보세요.",

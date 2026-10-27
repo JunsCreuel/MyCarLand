@@ -89,7 +89,7 @@ VS Code에서 `site.json`을 열면 각 항목에 마우스를 올렸을 때 설
 | `rear-detail` | 4, 5, 6 | (추가 scrub 섹션용) |
 | `interior-front` | 9 → 10 | (추가 scrub 섹션용) |
 | `interior-rear` | 11 → 12 | (추가 scrub 섹션용) |
-| `closeup` | 13~17 | detail |
+| `closeup` | 13~17 | (추가 scrub 섹션용) |
 | `picker` | 13~17 | finish |
 
 ## 명령어
