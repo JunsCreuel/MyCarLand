@@ -72,6 +72,9 @@ img { display: block; max-width: 100%; }
   background: linear-gradient(to bottom, rgb(0 0 0 / 0.55), transparent);
 }
 .nav__logo {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
   font-family: var(--font-head);
   font-size: 22px;
   letter-spacing: 0.06em;
