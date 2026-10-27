@@ -109,6 +109,8 @@ img { display: block; max-width: 100%; }
 
 /* ── scrub 장면 ─────────────────────────────────────────── */
 .scene--scrub { position: relative; height: calc(var(--scroll-length) * 1vh); }
+/* 자동 재생 장면은 딱 한 화면 (모바일 주소창이 보이는 상태의 높이에 맞춤) */
+.scene--scrub.is-auto { height: 100vh; height: 100svh; }
 .scene__sticky {
   position: sticky;
   top: 0;
@@ -312,6 +314,55 @@ img { display: block; max-width: 100%; }
   .link-secondary:hover { color: var(--fg); }
 }
 
+/* ── steps (제작 과정) ───────────────────────────────────── */
+.scene--steps {
+  min-height: 100vh;
+  min-height: 100svh;
+  padding: calc(var(--nav-h) + 32px) var(--gutter) 48px;
+  display: grid;
+  grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+  grid-template-rows: 1fr auto;
+  gap: 32px 72px;
+  align-items: center;
+}
+.scene--steps .headline { font-size: clamp(56px, 7.5vw, 128px); }
+.steps__list { list-style: none; margin: 0; padding: 0; border-top: 1px solid color-mix(in srgb, var(--fg) 16%, transparent); }
+.step {
+  display: grid;
+  grid-template-columns: clamp(72px, 8vw, 120px) 1fr;
+  gap: 24px;
+  align-items: baseline;
+  padding: 24px 0;
+  border-bottom: 1px solid color-mix(in srgb, var(--fg) 16%, transparent);
+}
+.step__num { font-family: var(--font-head); font-size: clamp(48px, 5.5vw, 88px); line-height: 0.9; color: var(--accent); }
+.step__label { margin: 0 0 4px; font-size: 12px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--fg-dim); }
+.step__title { margin: 0; font-size: clamp(20px, 1.8vw, 26px); font-weight: 800; letter-spacing: -0.01em; }
+.step__text { margin: 8px 0 0; max-width: 36ch; color: var(--fg-dim); }
+.steps__actions { grid-column: 2; display: flex; flex-wrap: wrap; align-items: center; gap: 8px 28px; }
+.btn-pill {
+  display: inline-flex; align-items: center; min-height: 52px; padding: 0 28px; border-radius: 999px;
+  background: var(--accent); color: #0a0a0b; font-weight: 800; font-size: 17px; text-decoration: none;
+  transition: transform 120ms var(--ease-out), background-color 150ms var(--ease-out);
+}
+.btn-pill:active { transform: scale(0.97); }
+@media (hover: hover) and (pointer: fine) {
+  .btn-pill:hover { background: color-mix(in srgb, var(--accent) 86%, white); }
+}
+/* 화면에 들어오면 위에서부터 차례로 떠오른다 (60ms 간격) */
+.scene--steps .steps__head > *,
+.scene--steps .step,
+.scene--steps .steps__actions {
+  opacity: 0;
+  transform: translateY(14px);
+  transition: opacity 400ms var(--ease-out), transform 400ms var(--ease-out);
+}
+.scene--steps .step { transition-delay: calc(120ms + var(--i) * 60ms); }
+.scene--steps .steps__actions { transition-delay: 360ms; }
+.scene--steps.is-visible .steps__head > *,
+.scene--steps.is-visible .step,
+.scene--steps.is-visible .steps__actions { opacity: 1; transform: none; }
+
 /* ── footer ─────────────────────────────────────────────── */
 .footer {
   padding: 24px var(--gutter) 40px;
@@ -351,10 +402,26 @@ img { display: block; max-width: 100%; }
   .picker__panel { grid-template-columns: 1fr; }
   .picker__stage { aspect-ratio: 3 / 4; min-height: 0; margin-inline: calc(var(--gutter) * -1); }
   .btn-kakao { width: 100%; justify-content: center; }
+  /* 모바일에서도 한 화면(약 844px)에 들어가게 간격을 줄이고 작은 영문 표시는 숨긴다 */
+  .scene--steps { grid-template-columns: 1fr; grid-template-rows: auto; gap: 16px; align-items: start; padding-top: calc(var(--nav-h) + 16px); padding-bottom: 24px; }
+  .scene--steps .headline { font-size: clamp(48px, 13vw, 64px); }
+  .scene--steps .subcopy { margin-top: 12px; }
+  .scene--steps .eyebrow { margin-bottom: 10px; }
+  .step { grid-template-columns: 56px 1fr; gap: 12px; padding: 12px 0; }
+  .step__num { font-size: 40px; }
+  .step__label { display: none; }
+  .step__title { font-size: 18px; }
+  .step__text { margin-top: 4px; font-size: 15px; }
+  .steps__actions { gap: 0 24px; }
+  .steps__actions { grid-column: 1; }
+  .btn-pill { width: 100%; justify-content: center; }
 }
 
 /* ── 동작 줄이기 ────────────────────────────────────────── */
 @media (prefers-reduced-motion: reduce) {
   .scene__copy > *,
-  .picker__image { transition: opacity 200ms linear; transform: none !important; }
+  .picker__image,
+  .scene--steps .steps__head > *,
+  .scene--steps .step,
+  .scene--steps .steps__actions { transition: opacity 200ms linear; transform: none !important; }
 }
