@@ -10,9 +10,20 @@
 ## 새 고객 순서
 
 1. `src/config/site.json`을 복사해 두고(이전 고객 백업) 내용을 고칩니다.
-2. AI 영상을 `raw/<고객>/`에 넣고 섹션마다 프레임을 뽑습니다 (Phase 2 스크립트, 프레임 수가 `site.json`에 자동 기록됨).
-3. 컬러 피커 이미지를 `public/images/`에 넣고 경로를 `site.json`에 적습니다.
+2. 영상을 `raw/<고객>/`에 넣고 섹션마다 프레임을 뽑습니다. 프레임 수는 `site.json`에 자동 기록돼요.
+   ```bash
+   node scripts/extract-frames.mjs raw/jun/hero.mp4 hero --fps 24
+   # 긴 영상의 일부만:   --start 38 --duration 4.5
+   # 모바일에서 차가 오른쪽에 있으면:   --focus-x 0.7   (세로로 자를 때 그 위치를 가운데로)
+   # 세로 영상이 따로 있으면:   --mobile-src raw/jun/hero-vertical.mp4
+   ```
+3. 컬러 피커 이미지를 만듭니다. AI로 만든 색상별 이미지가 있으면 `public/images/`에 넣고 경로만 적으면 되고,
+   없으면 영상의 한 장면에서 차 색만 바꿔 만들 수 있어요:
+   ```bash
+   node scripts/make-picker-images.mjs raw/jun/hero.mp4 --at 44.6 --focus-x 0.55
+   ```
 4. `npm run check` → 오류 0개 확인 → `npm run dev`로 화면 확인.
+5. `npm run deploy:gh`로 GitHub Pages에 배포 (Cloudflare Pages로 옮기면: 빌드 명령 `npm run build`, 출력 폴더 `dist`).
 
 VS Code에서 `site.json`을 열면 각 항목에 마우스를 올렸을 때 설명이 나오고, 잘못 쓰면 빨간 줄이 생겨요(`site.schema.json` 덕분).
 
@@ -31,6 +42,7 @@ VS Code에서 `site.json`을 열면 각 항목에 마우스를 올렸을 때 설
 | `contact.kakaoOpenChat` | 카카오톡 오픈채팅 링크 (**가장 큰 버튼**) | `https://open.kakao.com/o/...` |
 | `contact.phone`, `instagram` | 보조 연락처. 비워 두면 버튼이 안 나옴 | `010-1234-5678`, `juns.garage` |
 | `sections` | 섹션 목록 (위에서부터 화면 순서) | 아래 참고 |
+| `credits` | 사진·영상 출처 (CC BY 라이선스면 필수). 페이지 맨 아래에 작게 | `[{ "text": "Video: … CC BY 3.0", "url": "…" }]` |
 
 ### 섹션 공통
 
@@ -46,7 +58,9 @@ VS Code에서 `site.json`을 열면 각 항목에 마우스를 올렸을 때 설
 - `frames.folder`: `public/frames/<folder>/desktop|mobile/0001.webp ...`
 - `frames.count`: 프레임 수. **직접 쓰지 말고 프레임 추출 스크립트가 채우게 두세요.** 최대 120.
 - `frames.posterFrame`: "움직임 줄이기" 설정 사용자에게 보여줄 한 장 (비우면 가운데 프레임).
-- `copyRange`: 글이 보이는 구간 `[시작, 끝]` (장면 진행률 0~1).
+- `frames.alt`: 장면 설명 한 줄 (화면 낭독기용, 예: "굽은 시골길을 달리는 911 타르가").
+- `copyRange`: 글이 보이는 구간 `[시작, 끝]` (장면 진행률 0~1). 첫 장면은 `0`으로 시작해야 열자마자 글이 보여요.
+- `stats`: 화면 구석의 작은 사양 패널 (최대 4줄, 예: `{ "label": "ENGINE", "value": "Flat-6" }`). 없으면 안 나와요.
 
 ### `type: "picker"` — 버튼으로 색·휠 바꾸기
 
@@ -71,7 +85,7 @@ VS Code에서 `site.json`을 열면 각 항목에 마우스를 올렸을 때 설
 | 장면(scene) | 쓰는 컷 | 연결되는 데모 섹션 |
 |---|---|---|
 | `hero` | 1, 2, 8 | hero |
-| `drive` | 3, 7 | night |
+| `drive` | 3, 7 | drive |
 | `rear-detail` | 4, 5, 6 | (추가 scrub 섹션용) |
 | `interior-front` | 9 → 10 | (추가 scrub 섹션용) |
 | `interior-rear` | 11 → 12 | (추가 scrub 섹션용) |
@@ -85,3 +99,6 @@ VS Code에서 `site.json`을 열면 각 항목에 마우스를 올렸을 때 설
 | `npm run dev` | 개발 서버 (소개 사이트 `/`, 촬영 가이드 `/guide.html`) |
 | `npm run check` | 설정 검사 (오류가 있으면 이유를 한국어로 알려줌) |
 | `npm run build` | 검사 후 배포용 파일을 `dist/`에 생성 |
+| `npm run deploy:gh` | GitHub Pages에 배포 (gh-pages 브랜치) |
+| `npm run frames -- <영상> <섹션id>` | 프레임 추출 (`node scripts/extract-frames.mjs`와 같음) |
+| `python scripts/qa-site.py <주소>` | 용량·빈 화면·콘솔 에러 검증 (Playwright 필요) |

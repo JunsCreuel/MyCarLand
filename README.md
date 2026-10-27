@@ -14,6 +14,12 @@ npm run check    # 설정 검사
 
 새 고객 사이트를 만드는 방법은 [CONFIG_GUIDE.md](CONFIG_GUIDE.md)를 보세요.
 
+**데모:** https://junscreuel.github.io/MyCarLand/ · 촬영 가이드 https://junscreuel.github.io/MyCarLand/guide.html
+
+데모 영상은 실제 고객 차가 아니라 자유 라이선스 영상입니다:
+“Two Porsche 911 Targa driving as viewed from FPV drone” by SE FPV, [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/), via [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Two_Porsche_911_Targa_driving_as_viewed_from_FPV_drone.webm).
+컬러 피커의 다른 색상은 원본 장면에서 차 색만 바꾼 것입니다.
+
 ## 폴더
 
 ```
