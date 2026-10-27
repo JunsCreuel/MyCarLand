@@ -41,6 +41,7 @@ VS Code에서 `site.json`을 열면 각 항목에 마우스를 올렸을 때 설
 | `car` | 차량 정보 (선택) | |
 | `contact.kakaoOpenChat` | 카카오톡 오픈채팅 링크 (**가장 큰 버튼**) | `https://open.kakao.com/o/...` |
 | `contact.phone`, `instagram` | 보조 연락처. 비워 두면 버튼이 안 나옴 | `010-1234-5678`, `juns.garage` |
+| `scroll.mode` | `snap`: 휠·스와이프 한 번에 한 화면씩 / `free`: 자유롭게 부드러운 스크롤 | `snap` |
 | `sections` | 섹션 목록 (위에서부터 화면 순서) | 아래 참고 |
 | `credits` | 사진·영상 출처 (CC BY 라이선스면 필수). 페이지 맨 아래에 작게 | `[{ "text": "Video: … CC BY 3.0", "url": "…" }]` |
 
@@ -54,7 +55,12 @@ VS Code에서 `site.json`을 열면 각 항목에 마우스를 올렸을 때 설
 
 ### `type: "scrub"` — 스크롤하면 프레임이 재생되는 장면
 
-- `scrollLength`: 이 장면을 다 보는 데 드는 스크롤 길이 (`300` = 화면 3개만큼). 길수록 천천히 재생돼요.
+- `playback`: 재생 방식
+  - `"auto"` — 한 화면짜리. 화면에 들어오면 영상처럼 스스로 재생돼요 (프레임을 다 받은 뒤 시작). `snap` 모드와 잘 맞아요.
+    - `fps`: 1초에 넘길 프레임 수 (기본 30, 낮을수록 느린 슬로모션)
+    - `onEnd`: 끝나면 `hold` 멈춤 / `next` 다음 화면으로 자동 이동 / `loop` 반복
+  - `"scroll"` (기본) — 스크롤하는 만큼 재생. 이때는 `scrollLength`가 필요해요.
+- `scrollLength`: (scroll 재생일 때) 장면을 다 보는 데 드는 스크롤 길이 (`300` = 화면 3개만큼). 길수록 천천히 재생돼요.
 - `frames.folder`: `public/frames/<folder>/desktop|mobile/0001.webp ...`
 - `frames.count`: 프레임 수. **직접 쓰지 말고 프레임 추출 스크립트가 채우게 두세요.** 최대 120.
 - `frames.posterFrame`: "움직임 줄이기" 설정 사용자에게 보여줄 한 장 (비우면 가운데 프레임).
@@ -67,6 +73,11 @@ VS Code에서 `site.json`을 열면 각 항목에 마우스를 올렸을 때 설
 - `options`: 2~6개. 각각 `id`, 버튼 글자 `label`, 견본 색 `swatch`, 이미지 `image.desktop` / `image.mobile`.
 - 모든 옵션 이미지는 **같은 구도·같은 크기**여야 크로스페이드가 자연스러워요.
 - `defaultOption`: 처음 선택된 옵션 id.
+
+### `type: "steps"` — 제작 과정처럼 단계 보여주기
+
+- `steps`: 2~5개. 각각 `title`, `text`, 선택으로 작은 영문 `label`(예: `SHOOT`).
+- `actions`: 아래 버튼. 첫 번째가 노란 주 버튼. `href`에 `"guide"`(촬영 가이드), `"kakao"`(카카오톡) 또는 주소.
 
 ### `type: "cta"` — 문의
 

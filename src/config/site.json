@@ -48,7 +48,6 @@
     {
       "id": "hero",
       "type": "scrub",
-      "scrollLength": 250,
       "frames": {
         "folder": "hero",
         "count": 120,
@@ -62,10 +61,6 @@
         "subcopy": "매일 타는 내 차, 오늘은 주인공으로.",
         "position": "bottom-left"
       },
-      "copyRange": [
-        0,
-        0.55
-      ],
       "stats": [
         {
           "label": "ENGINE",
@@ -79,12 +74,51 @@
           "label": "COLOR",
           "value": "Aqua Blue"
         }
+      ],
+      "playback": "auto",
+      "fps": 30,
+      "onEnd": "next"
+    },
+    {
+      "id": "process",
+      "type": "steps",
+      "copy": {
+        "eyebrow": "01 — HOW IT'S MADE",
+        "headline": "THREE STEPS.\nONE LINK.",
+        "accentWord": "ONE LINK.",
+        "subcopy": "휴대폰으로 찍은 사진 몇 장이면, 이런 페이지가 내 차로 만들어져요."
+      },
+      "steps": [
+        {
+          "label": "SHOOT",
+          "title": "휴대폰으로 촬영",
+          "text": "가이드를 보며 정해진 자리에서 12장. 15분이면 끝나요."
+        },
+        {
+          "label": "GENERATE",
+          "title": "AI 장면 제작",
+          "text": "사진으로 영화 같은 장면과 영상을 만들어요. 실내는 실제 사진만 이어 붙여요."
+        },
+        {
+          "label": "LAUNCH",
+          "title": "내 차 사이트 완성",
+          "text": "스크롤하면 내 차가 달리는 나만의 페이지. 링크 하나로 공유해요."
+        }
+      ],
+      "actions": [
+        {
+          "label": "촬영 가이드 보기",
+          "href": "guide"
+        },
+        {
+          "label": "카카오톡으로 문의하기",
+          "href": "kakao"
+        }
       ]
     },
     {
       "id": "drive",
       "type": "scrub",
-      "scrollLength": 300,
       "frames": {
         "folder": "drive",
         "count": 120,
@@ -92,22 +126,21 @@
         "alt": "굽은 시골길을 달리는 911 타르가 두 대"
       },
       "copy": {
-        "eyebrow": "01 — COUNTRY ROAD",
+        "eyebrow": "02 — COUNTRY ROAD",
         "headline": "TAKE THE\nLONG WAY.",
         "accentWord": "LONG WAY.",
         "subcopy": "곧은 길보다 굽은 길. 이 차가 가장 빛나는 순간.",
         "position": "left"
       },
-      "copyRange": [
-        0.2,
-        0.85
-      ]
+      "playback": "auto",
+      "fps": 30,
+      "onEnd": "hold"
     },
     {
       "id": "finish",
       "type": "picker",
       "copy": {
-        "eyebrow": "02 — COLOR",
+        "eyebrow": "03 — COLOR",
         "headline": "PICK YOUR\nFINISH.",
         "accentWord": "FINISH.",
         "subcopy": "같은 차, 다른 분위기. 색을 골라보세요.",
@@ -171,5 +204,8 @@
       "text": "Video: “Two Porsche 911 Targa driving as viewed from FPV drone” by SE FPV, CC BY 3.0, via Wikimedia Commons",
       "url": "https://commons.wikimedia.org/wiki/File:Two_Porsche_911_Targa_driving_as_viewed_from_FPV_drone.webm"
     }
-  ]
+  ],
+  "scroll": {
+    "mode": "snap"
+  }
 }
