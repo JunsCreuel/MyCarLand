@@ -14,3 +14,6 @@ raw/
 .DS_Store
 Thumbs.db
 .vscode/
+
+# QA 스크린샷 (scripts/qa-site.py 결과)
+qa-screenshots/
