@@ -1,0 +1,16 @@
+# 의존성·빌드 결과
+node_modules/
+dist/
+
+# 원본 영상·고객 사진 (용량이 크고 개인 자료라 git에 올리지 않음)
+raw/
+
+# API 키 같은 비밀 값
+.env
+.env.*
+!.env.example
+
+# OS·에디터
+.DS_Store
+Thumbs.db
+.vscode/
