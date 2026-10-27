@@ -10,7 +10,7 @@
   "brand": {
     "name": "준의 차고",
     "logoText": "JUN'S GARAGE",
-    "accentColor": "#D7FF3A",
+    "accentColor": "#F5C518",
     "backgroundColor": "#0A0A0B",
     "textColor": "#F2F2F0",
     "fonts": {
@@ -49,7 +49,11 @@
       "id": "hero",
       "type": "scrub",
       "scrollLength": 300,
-      "frames": { "folder": "hero", "count": 0, "ext": "webp" },
+      "frames": {
+        "folder": "hero",
+        "count": 120,
+        "ext": "webp"
+      },
       "copy": {
         "eyebrow": "2023 AVANTE N",
         "headline": "PULL\nUP.",
@@ -57,13 +61,20 @@
         "subcopy": "매일 타는 내 차, 오늘은 주인공으로.",
         "position": "bottom-left"
       },
-      "copyRange": [0.05, 0.6]
+      "copyRange": [
+        0.05,
+        0.6
+      ]
     },
     {
       "id": "detail",
       "type": "scrub",
       "scrollLength": 250,
-      "frames": { "folder": "detail", "count": 0, "ext": "webp" },
+      "frames": {
+        "folder": "detail",
+        "count": 120,
+        "ext": "webp"
+      },
       "copy": {
         "eyebrow": "01 — DETAIL",
         "headline": "CLOSE ENOUGH\nTO TOUCH.",
@@ -71,13 +82,20 @@
         "subcopy": "휠, 캘리퍼, 헤드램프. 매일 지나치던 디테일을 가장 가까이에서.",
         "position": "right"
       },
-      "copyRange": [0.2, 0.8]
+      "copyRange": [
+        0.2,
+        0.8
+      ]
     },
     {
       "id": "night",
       "type": "scrub",
       "scrollLength": 300,
-      "frames": { "folder": "night", "count": 0, "ext": "webp" },
+      "frames": {
+        "folder": "night",
+        "count": 120,
+        "ext": "webp"
+      },
       "copy": {
         "eyebrow": "02 — NIGHT RUN",
         "headline": "AFTER\nDARK.",
@@ -85,7 +103,10 @@
         "subcopy": "불이 켜지는 순간, 낮과는 다른 차가 됩니다.",
         "position": "left"
       },
-      "copyRange": [0.25, 0.85]
+      "copyRange": [
+        0.25,
+        0.85
+      ]
     },
     {
       "id": "finish",
@@ -103,25 +124,37 @@
           "id": "original",
           "label": "퍼포먼스 블루",
           "swatch": "#1F4FD8",
-          "image": { "desktop": "/images/finish/original-desktop.webp", "mobile": "/images/finish/original-mobile.webp" }
+          "image": {
+            "desktop": "/images/finish/original-desktop.webp",
+            "mobile": "/images/finish/original-mobile.webp"
+          }
         },
         {
           "id": "matte-black",
           "label": "매트 블랙",
           "swatch": "#17181A",
-          "image": { "desktop": "/images/finish/matte-black-desktop.webp", "mobile": "/images/finish/matte-black-mobile.webp" }
+          "image": {
+            "desktop": "/images/finish/matte-black-desktop.webp",
+            "mobile": "/images/finish/matte-black-mobile.webp"
+          }
         },
         {
           "id": "nardo-grey",
           "label": "나르도 그레이",
           "swatch": "#8A8D8F",
-          "image": { "desktop": "/images/finish/nardo-grey-desktop.webp", "mobile": "/images/finish/nardo-grey-mobile.webp" }
+          "image": {
+            "desktop": "/images/finish/nardo-grey-desktop.webp",
+            "mobile": "/images/finish/nardo-grey-mobile.webp"
+          }
         },
         {
           "id": "chalk-white",
           "label": "초크 화이트",
           "swatch": "#E6E3DC",
-          "image": { "desktop": "/images/finish/chalk-white-desktop.webp", "mobile": "/images/finish/chalk-white-mobile.webp" }
+          "image": {
+            "desktop": "/images/finish/chalk-white-desktop.webp",
+            "mobile": "/images/finish/chalk-white-mobile.webp"
+          }
         }
       ]
     },
