@@ -54,7 +54,18 @@ export function createScrub(section, site, { isFirst }) {
     renderer.request(frames.nearest(index));
   }
 
-  let near = isFirst; // 첫 섹션은 바로 전부 받기 시작
+  // 첫 섹션은 페이지 로드가 끝나면 바로 나머지를 받는다.
+  // (열자마자 받기 시작하면 첫 화면에 필요한 글꼴·JS 와 대역폭을 다퉈서 첫 화면이 늦어진다)
+  let near = false;
+  if (isFirst && count) {
+    const startAll = () => {
+      near = true;
+      frames.loadAll();
+    };
+    const idle = window.requestIdleCallback ?? ((fn) => setTimeout(fn, 200));
+    if (document.readyState === 'complete') idle(startAll);
+    else window.addEventListener('load', () => idle(startAll), { once: true });
+  }
   if (count === 0) {
     el.classList.add('is-empty'); // 아직 프레임이 없으면 글만 보인다
   } else {
@@ -81,6 +92,8 @@ export function createScrub(section, site, { isFirst }) {
         start: 'top bottom+=100%',
         end: 'bottom top',
         onToggle: (self) => {
+          // 첫 섹션은 처음부터 화면 안이라 바로 켜지는데, 그건 위의 load 이후 처리에 맡긴다
+          if (isFirst && document.readyState !== 'complete') return;
           if (self.isActive && count) {
             near = true;
             frames.loadAll();
