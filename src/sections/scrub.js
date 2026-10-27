@@ -37,21 +37,28 @@ export function createScrub(section, site, { isFirst }) {
   const canvas = el.querySelector('canvas');
   const copy = el.querySelector('.scene__copy');
   const renderer = new CanvasRenderer(canvas);
-  let current = reduced ? poster : 0; // 지금 보여줘야 할 프레임 번호
+  let current = reduced ? poster : 0; // 지금 보여줘야 할 위치 (12.4 = 12번과 13번 사이)
   let frames;
 
   // 프레임 세트(PC/모바일)를 만들고 첫 장을 받는다
   function useSet() {
     frames = new FrameSequence({ ...site.frames, ...section.frames, set: frameSet() });
     // 기다리던 프레임이 도착하면 다시 그린다
-    frames.onFrameLoaded = () => renderer.request(frames.nearest(current));
+    frames.onFrameLoaded = () => show(current);
     frames.loadFirst(current);
     if (!reduced && near) frames.loadAll();
   }
 
-  function show(index) {
-    current = index;
-    renderer.request(frames.nearest(index));
+  // pos 위치를 그린다. 앞뒤 두 장이 모두 있으면 비율대로 겹치고,
+  // 아직 안 받은 프레임이면 이미 받은 가장 가까운 한 장으로 대신한다.
+  function show(pos) {
+    current = pos;
+    const a = Math.floor(pos);
+    const b = Math.min(a + 1, count - 1);
+    const imgA = frames.images[a];
+    const imgB = frames.images[b];
+    if (imgA && imgB) renderer.request(imgA, imgB, pos - a);
+    else renderer.request(frames.nearest(Math.round(pos)));
   }
 
   // 첫 섹션은 페이지 로드가 끝나면 바로 나머지를 받는다.
@@ -108,7 +115,7 @@ export function createScrub(section, site, { isFirst }) {
         end: 'bottom bottom',
         onUpdate: (self) => {
           const p = self.progress;
-          if (count) show(Math.min(count - 1, Math.round(p * (count - 1))));
+          if (count) show(p * (count - 1));
           copy.classList.toggle('is-visible', p >= copyFrom && p <= copyTo);
         },
       });
