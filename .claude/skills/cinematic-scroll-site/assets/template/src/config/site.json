@@ -1,0 +1,204 @@
+{
+  "$schema": "./site.schema.json",
+  "profile": "owner",
+  "meta": {
+    "lang": "ko",
+    "title": "JUN'S GARAGE — 911 Targa",
+    "description": "스크롤을 내리면 차가 달리는, 나만의 911 타르가 소개 페이지."
+  },
+  "brand": {
+    "name": "준의 차고",
+    "logoText": "JUN'S GARAGE",
+    "accentColor": "#F5C518",
+    "backgroundColor": "#0A0A0B",
+    "textColor": "#F2F2F0",
+    "fonts": {
+      "headline": {
+        "family": "Anton",
+        "weight": 400,
+        "cssUrl": "https://fonts.googleapis.com/css2?family=Anton&display=swap"
+      },
+      "body": {
+        "family": "Pretendard Variable",
+        "cssUrl": "https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css"
+      }
+    }
+  },
+  "car": {
+    "maker": "Porsche",
+    "model": "911 Targa",
+    "year": 1973,
+    "color": "Aqua Blue"
+  },
+  "contact": {
+    "kakaoOpenChat": "https://open.kakao.com/o/sDEMO0000",
+    "phone": "010-0000-0000",
+    "instagram": "juns.garage"
+  },
+  "nav": {
+    "ctaLabel": "문의하기"
+  },
+  "frames": {
+    "basePath": "/frames",
+    "mobileMaxWidth": 768,
+    "digits": 4
+  },
+  "sections": [
+    {
+      "id": "hero",
+      "type": "scrub",
+      "frames": {
+        "folder": "hero",
+        "count": 0,
+        "ext": "webp",
+        "alt": "가까이에서 돌아보는 911 타르가의 휠과 실내"
+      },
+      "copy": {
+        "eyebrow": "PORSCHE 911 TARGA",
+        "headline": "PULL\nUP.",
+        "accentWord": "UP.",
+        "subcopy": "매일 타는 내 차, 오늘은 주인공으로.",
+        "position": "bottom-left"
+      },
+      "stats": [
+        {
+          "label": "ENGINE",
+          "value": "Flat-6"
+        },
+        {
+          "label": "ROOF",
+          "value": "Targa"
+        },
+        {
+          "label": "COLOR",
+          "value": "Aqua Blue"
+        }
+      ],
+      "playback": "auto",
+      "fps": 30,
+      "onEnd": "next"
+    },
+    {
+      "id": "process",
+      "type": "steps",
+      "copy": {
+        "eyebrow": "01 — HOW IT'S MADE",
+        "headline": "THREE STEPS.\nONE LINK.",
+        "accentWord": "ONE LINK.",
+        "subcopy": "휴대폰으로 찍은 사진 몇 장이면, 이런 페이지가 내 차로 만들어져요."
+      },
+      "steps": [
+        {
+          "label": "SHOOT",
+          "title": "휴대폰으로 촬영",
+          "text": "가이드를 보며 정해진 자리에서 12장. 15분이면 끝나요."
+        },
+        {
+          "label": "GENERATE",
+          "title": "AI 장면 제작",
+          "text": "사진으로 영화 같은 장면과 영상을 만들어요. 실내는 실제 사진만 이어 붙여요."
+        },
+        {
+          "label": "LAUNCH",
+          "title": "내 차 사이트 완성",
+          "text": "스크롤하면 내 차가 달리는 나만의 페이지. 링크 하나로 공유해요."
+        }
+      ],
+      "actions": [
+        {
+          "label": "촬영 가이드 보기",
+          "href": "guide"
+        },
+        {
+          "label": "카카오톡으로 문의하기",
+          "href": "kakao"
+        }
+      ]
+    },
+    {
+      "id": "drive",
+      "type": "scrub",
+      "frames": {
+        "folder": "drive",
+        "count": 0,
+        "ext": "webp",
+        "alt": "굽은 시골길을 달리는 911 타르가 두 대"
+      },
+      "copy": {
+        "eyebrow": "02 — COUNTRY ROAD",
+        "headline": "TAKE THE\nLONG WAY.",
+        "accentWord": "LONG WAY.",
+        "subcopy": "곧은 길보다 굽은 길. 이 차가 가장 빛나는 순간.",
+        "position": "left"
+      },
+      "playback": "auto",
+      "fps": 30,
+      "onEnd": "hold"
+    },
+    {
+      "id": "finish",
+      "type": "picker",
+      "copy": {
+        "eyebrow": "03 — COLOR",
+        "headline": "PICK YOUR\nFINISH.",
+        "accentWord": "FINISH.",
+        "subcopy": "같은 차, 다른 분위기. 색을 골라보세요.",
+        "position": "left"
+      },
+      "defaultOption": "original",
+      "options": [
+        {
+          "id": "original",
+          "label": "아쿠아 블루",
+          "swatch": "#1F6F8B",
+          "image": {
+            "desktop": "/images/finish/original-desktop.webp",
+            "mobile": "/images/finish/original-mobile.webp"
+          }
+        },
+        {
+          "id": "guards-red",
+          "label": "가드 레드",
+          "swatch": "#B3122B",
+          "image": {
+            "desktop": "/images/finish/guards-red-desktop.webp",
+            "mobile": "/images/finish/guards-red-mobile.webp"
+          }
+        },
+        {
+          "id": "jet-black",
+          "label": "젯 블랙",
+          "swatch": "#141516",
+          "image": {
+            "desktop": "/images/finish/jet-black-desktop.webp",
+            "mobile": "/images/finish/jet-black-mobile.webp"
+          }
+        },
+        {
+          "id": "gt-silver",
+          "label": "GT 실버",
+          "swatch": "#A9ABAE",
+          "image": {
+            "desktop": "/images/finish/gt-silver-desktop.webp",
+            "mobile": "/images/finish/gt-silver-mobile.webp"
+          }
+        }
+      ]
+    },
+    {
+      "id": "contact",
+      "type": "cta",
+      "copy": {
+        "eyebrow": "CONTACT",
+        "headline": "LET'S\nTALK.",
+        "accentWord": "TALK.",
+        "subcopy": "차 이야기, 동호회 모임, 무엇이든 편하게 연락 주세요.",
+        "position": "center"
+      },
+      "kakaoLabel": "카카오톡으로 문의하기"
+    }
+  ],
+  "scroll": {
+    "mode": "snap"
+  }
+}

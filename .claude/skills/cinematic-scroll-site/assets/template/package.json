@@ -1,0 +1,23 @@
+{
+  "name": "cinematic-site",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "description": "스크롤하면 차가 움직이는 원페이지 차량 소개 사이트 템플릿",
+  "scripts": {
+    "dev": "vite",
+    "build": "npm run check && vite build",
+    "preview": "vite preview",
+    "check": "node scripts/check-config.mjs",
+    "deploy:gh": "node scripts/deploy-gh-pages.mjs",
+    "frames": "node scripts/extract-frames.mjs"
+  },
+  "dependencies": {
+    "gsap": "^3.15.0",
+    "lenis": "^1.3.27"
+  },
+  "devDependencies": {
+    "ajv": "^8.20.0",
+    "vite": "^8.3.5"
+  }
+}
