@@ -45,7 +45,7 @@ function describe(e) {
     case 'maxItems': return `${p.limit}개 이하여야 합니다`;
     case 'enum': return `다음 중 하나여야 합니다: ${p.allowedValues.join(', ')}`;
     case 'type': return `${p.type} 형식이어야 합니다`;
-    case 'discriminator': return `type 값이 올바르지 않습니다 (scrub, picker, cta 중 하나)`;
+    case 'discriminator': return `type 값이 올바르지 않습니다 (scrub, picker, cta, steps 중 하나)`;
     default: return e.message;
   }
 }
@@ -93,6 +93,12 @@ if (site) safely('site.json', () => {
     }
 
     if (s.type === 'scrub') {
+      if (s.playback !== 'auto' && !s.scrollLength) {
+        errors.push(`${where}: 스크롤로 재생하는 장면은 scrollLength 가 필요합니다 (자동 재생이면 "playback": "auto").`);
+      }
+      if (s.playback === 'auto' && s.onEnd === 'next' && s === site.sections.at(-1)) {
+        warnings.push(`${where}: 마지막 섹션이라 onEnd "next" 로 넘어갈 화면이 없습니다.`);
+      }
       const [from, to] = s.copyRange ?? [0.15, 0.75];
       if (from >= to) errors.push(`${where}: copyRange 시작(${from})이 끝(${to})보다 작아야 합니다.`);
 

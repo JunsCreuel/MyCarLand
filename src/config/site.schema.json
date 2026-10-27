@@ -208,6 +208,9 @@
           },
           {
             "$ref": "#/$defs/ctaSection"
+          },
+          {
+            "$ref": "#/$defs/stepsSection"
           }
         ]
       }
@@ -228,6 +231,21 @@
           "url": {
             "type": "string"
           }
+        }
+      }
+    },
+    "scroll": {
+      "description": "스크롤 방식",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "mode": {
+          "description": "snap: 휠·스와이프 한 번에 한 화면씩 넘어감 / free: 자유 스크롤(부드럽게)",
+          "enum": [
+            "snap",
+            "free"
+          ],
+          "default": "free"
         }
       }
     }
@@ -347,7 +365,6 @@
       "required": [
         "id",
         "type",
-        "scrollLength",
         "frames",
         "copy"
       ],
@@ -360,7 +377,7 @@
           "const": "scrub"
         },
         "scrollLength": {
-          "description": "이 장면을 다 보는 데 필요한 스크롤 길이 (화면 높이의 %, 300 = 3화면)",
+          "description": "playback 이 scroll 일 때 이 장면을 다 보는 데 필요한 스크롤 길이 (화면 높이의 %, 300 = 3화면)",
           "type": "integer",
           "minimum": 100,
           "maximum": 1000
@@ -413,6 +430,30 @@
               }
             }
           }
+        },
+        "playback": {
+          "description": "scroll: 스크롤하는 만큼 재생 / auto: 화면에 들어오면 영상처럼 스스로 재생 (한 화면짜리)",
+          "enum": [
+            "scroll",
+            "auto"
+          ],
+          "default": "scroll"
+        },
+        "fps": {
+          "description": "auto 재생 속도 (1초에 넘길 프레임 수, 낮을수록 느린 슬로모션)",
+          "type": "number",
+          "minimum": 5,
+          "maximum": 60,
+          "default": 30
+        },
+        "onEnd": {
+          "description": "auto 재생이 끝나면: hold 마지막 장면에서 멈춤 / next 다음 화면으로 / loop 반복",
+          "enum": [
+            "hold",
+            "next",
+            "loop"
+          ],
+          "default": "hold"
         }
       }
     },
@@ -522,6 +563,74 @@
             },
             "mobile": {
               "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "stepsSection": {
+      "description": "제작 과정처럼 단계를 순서대로 보여주는 섹션",
+      "type": "object",
+      "required": [
+        "id",
+        "type",
+        "copy",
+        "steps"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/sectionId"
+        },
+        "type": {
+          "const": "steps"
+        },
+        "copy": {
+          "$ref": "#/$defs/copy"
+        },
+        "steps": {
+          "type": "array",
+          "minItems": 2,
+          "maxItems": 5,
+          "items": {
+            "type": "object",
+            "required": [
+              "title",
+              "text"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "label": {
+                "description": "작은 영문 표시 (예: SHOOT)",
+                "type": "string"
+              },
+              "title": {
+                "type": "string"
+              },
+              "text": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "actions": {
+          "description": "아래 버튼 (첫 번째가 주 버튼). href 에 guide(촬영 가이드), kakao(카카오톡) 또는 주소",
+          "type": "array",
+          "maxItems": 3,
+          "items": {
+            "type": "object",
+            "required": [
+              "label",
+              "href"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "label": {
+                "type": "string"
+              },
+              "href": {
+                "type": "string"
+              }
             }
           }
         }
