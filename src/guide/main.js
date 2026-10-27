@@ -1,6 +1,6 @@
 // 촬영 가이드 페이지 진입점.
 // Phase 1에서는 shots.json을 묶음별로 나열만 한다. (실제 가이드 화면은 Phase 5)
-import data from '../config/shots.json';
+import data from '../config/shots.json?public';
 import '../styles/preview.css';
 
 const root = document.querySelector('#guide');
