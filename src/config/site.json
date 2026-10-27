@@ -51,7 +51,7 @@
       "scrollLength": 300,
       "frames": {
         "folder": "hero",
-        "count": 108,
+        "count": 120,
         "ext": "webp",
         "alt": "멀리서 다가오는 청록색 포르쉐 911 타르가"
       },
@@ -87,7 +87,7 @@
       "scrollLength": 250,
       "frames": {
         "folder": "detail",
-        "count": 108,
+        "count": 120,
         "ext": "webp",
         "alt": "가까이에서 돌아보는 911 타르가의 휠과 실내"
       },
