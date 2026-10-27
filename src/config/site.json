@@ -3,8 +3,8 @@
   "profile": "owner",
   "meta": {
     "lang": "ko",
-    "title": "JUN'S GARAGE — 내 차를 소개합니다",
-    "description": "스크롤을 내리면 차가 움직이는 나만의 차량 소개 페이지.",
+    "title": "JUN'S GARAGE — 911 Targa",
+    "description": "스크롤을 내리면 차가 달리는, 나만의 911 타르가 소개 페이지.",
     "ogImage": "/images/og.webp"
   },
   "brand": {
@@ -26,10 +26,10 @@
     }
   },
   "car": {
-    "maker": "Hyundai",
-    "model": "Avante N",
-    "year": 2023,
-    "color": "Performance Blue"
+    "maker": "Porsche",
+    "model": "911 Targa",
+    "year": 1973,
+    "color": "Aqua Blue"
   },
   "contact": {
     "kakaoOpenChat": "https://open.kakao.com/o/sDEMO0000",
@@ -51,19 +51,33 @@
       "scrollLength": 300,
       "frames": {
         "folder": "hero",
-        "count": 120,
+        "count": 108,
         "ext": "webp"
       },
       "copy": {
-        "eyebrow": "2023 AVANTE N",
+        "eyebrow": "PORSCHE 911 TARGA",
         "headline": "PULL\nUP.",
         "accentWord": "UP.",
         "subcopy": "매일 타는 내 차, 오늘은 주인공으로.",
         "position": "bottom-left"
       },
       "copyRange": [
-        0.05,
-        0.6
+        0,
+        0.55
+      ],
+      "stats": [
+        {
+          "label": "ENGINE",
+          "value": "Flat-6"
+        },
+        {
+          "label": "ROOF",
+          "value": "Targa"
+        },
+        {
+          "label": "COLOR",
+          "value": "Aqua Blue"
+        }
       ]
     },
     {
@@ -72,39 +86,39 @@
       "scrollLength": 250,
       "frames": {
         "folder": "detail",
-        "count": 120,
+        "count": 108,
         "ext": "webp"
       },
       "copy": {
         "eyebrow": "01 — DETAIL",
         "headline": "CLOSE ENOUGH\nTO TOUCH.",
         "accentWord": "TOUCH.",
-        "subcopy": "휠, 캘리퍼, 헤드램프. 매일 지나치던 디테일을 가장 가까이에서.",
+        "subcopy": "휠, 타르가 바, 오렌지 가죽 시트. 매일 지나치던 디테일을 가장 가까이에서.",
         "position": "right"
       },
       "copyRange": [
-        0.2,
-        0.8
+        0.15,
+        0.85
       ]
     },
     {
-      "id": "night",
+      "id": "drive",
       "type": "scrub",
       "scrollLength": 300,
       "frames": {
-        "folder": "night",
+        "folder": "drive",
         "count": 120,
         "ext": "webp"
       },
       "copy": {
-        "eyebrow": "02 — NIGHT RUN",
-        "headline": "AFTER\nDARK.",
-        "accentWord": "DARK.",
-        "subcopy": "불이 켜지는 순간, 낮과는 다른 차가 됩니다.",
+        "eyebrow": "02 — COUNTRY ROAD",
+        "headline": "TAKE THE\nLONG WAY.",
+        "accentWord": "LONG WAY.",
+        "subcopy": "곧은 길보다 굽은 길. 이 차가 가장 빛나는 순간.",
         "position": "left"
       },
       "copyRange": [
-        0.25,
+        0.2,
         0.85
       ]
     },
@@ -122,38 +136,38 @@
       "options": [
         {
           "id": "original",
-          "label": "퍼포먼스 블루",
-          "swatch": "#1F4FD8",
+          "label": "아쿠아 블루",
+          "swatch": "#1F6F8B",
           "image": {
             "desktop": "/images/finish/original-desktop.webp",
             "mobile": "/images/finish/original-mobile.webp"
           }
         },
         {
-          "id": "matte-black",
-          "label": "매트 블랙",
-          "swatch": "#17181A",
+          "id": "guards-red",
+          "label": "가드 레드",
+          "swatch": "#B3122B",
           "image": {
-            "desktop": "/images/finish/matte-black-desktop.webp",
-            "mobile": "/images/finish/matte-black-mobile.webp"
+            "desktop": "/images/finish/guards-red-desktop.webp",
+            "mobile": "/images/finish/guards-red-mobile.webp"
           }
         },
         {
-          "id": "nardo-grey",
-          "label": "나르도 그레이",
-          "swatch": "#8A8D8F",
+          "id": "jet-black",
+          "label": "젯 블랙",
+          "swatch": "#141516",
           "image": {
-            "desktop": "/images/finish/nardo-grey-desktop.webp",
-            "mobile": "/images/finish/nardo-grey-mobile.webp"
+            "desktop": "/images/finish/jet-black-desktop.webp",
+            "mobile": "/images/finish/jet-black-mobile.webp"
           }
         },
         {
-          "id": "chalk-white",
-          "label": "초크 화이트",
-          "swatch": "#E6E3DC",
+          "id": "gt-silver",
+          "label": "GT 실버",
+          "swatch": "#A9ABAE",
           "image": {
-            "desktop": "/images/finish/chalk-white-desktop.webp",
-            "mobile": "/images/finish/chalk-white-mobile.webp"
+            "desktop": "/images/finish/gt-silver-desktop.webp",
+            "mobile": "/images/finish/gt-silver-mobile.webp"
           }
         }
       ]
@@ -169,6 +183,12 @@
         "position": "center"
       },
       "kakaoLabel": "카카오톡으로 문의하기"
+    }
+  ],
+  "credits": [
+    {
+      "text": "Video: “Two Porsche 911 Targa driving as viewed from FPV drone” by SE FPV, CC BY 3.0, via Wikimedia Commons",
+      "url": "https://commons.wikimedia.org/wiki/File:Two_Porsche_911_Targa_driving_as_viewed_from_FPV_drone.webm"
     }
   ]
 }

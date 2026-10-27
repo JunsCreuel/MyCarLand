@@ -4,43 +4,106 @@
   "title": "MyCarLand 고객 사이트 설정",
   "description": "고객 한 명당 하나. 이 파일과 public/frames/ 폴더만 바꾸면 새 사이트가 된다.",
   "type": "object",
-  "required": ["profile", "meta", "brand", "contact", "sections"],
+  "required": [
+    "profile",
+    "meta",
+    "brand",
+    "contact",
+    "sections"
+  ],
   "additionalProperties": false,
   "properties": {
-    "$schema": { "type": "string" },
+    "$schema": {
+      "type": "string"
+    },
     "profile": {
       "description": "사이트 종류. 같은 템플릿을 고객 유형별로 쓰기 위한 표시 (owner: 개인 차주, shop: 튜닝·랩핑샵, dealer: 중고차 딜러)",
-      "enum": ["owner", "shop", "dealer"]
+      "enum": [
+        "owner",
+        "shop",
+        "dealer"
+      ]
     },
     "meta": {
       "description": "브라우저 탭 제목, 검색·공유 미리보기에 쓰이는 정보",
       "type": "object",
-      "required": ["lang", "title", "description"],
+      "required": [
+        "lang",
+        "title",
+        "description"
+      ],
       "additionalProperties": false,
       "properties": {
-        "lang": { "description": "페이지 언어 코드", "type": "string", "default": "ko" },
-        "title": { "description": "브라우저 탭 제목", "type": "string", "minLength": 1 },
-        "description": { "description": "검색 결과·링크 미리보기 설명 (80자 안팎)", "type": "string" },
-        "ogImage": { "description": "링크 공유 썸네일 이미지 경로 (public 기준, 예: /images/og.webp)", "type": "string" }
+        "lang": {
+          "description": "페이지 언어 코드",
+          "type": "string",
+          "default": "ko"
+        },
+        "title": {
+          "description": "브라우저 탭 제목",
+          "type": "string",
+          "minLength": 1
+        },
+        "description": {
+          "description": "검색 결과·링크 미리보기 설명 (80자 안팎)",
+          "type": "string"
+        },
+        "ogImage": {
+          "description": "링크 공유 썸네일 이미지 경로 (public 기준, 예: /images/og.webp)",
+          "type": "string"
+        }
       }
     },
     "brand": {
       "type": "object",
-      "required": ["name", "logoText", "accentColor", "fonts"],
+      "required": [
+        "name",
+        "logoText",
+        "accentColor",
+        "fonts"
+      ],
       "additionalProperties": false,
       "properties": {
-        "name": { "description": "고객(차주·업체) 이름. 문구와 meta에 쓰인다", "type": "string", "minLength": 1 },
-        "logoText": { "description": "상단 내비게이션에 보이는 로고 글자", "type": "string", "minLength": 1 },
-        "accentColor": { "description": "포인트 컬러 한 가지 (#RRGGBB)", "$ref": "#/$defs/hexColor" },
-        "backgroundColor": { "description": "배경색 (#RRGGBB). 어두운 색을 권장", "$ref": "#/$defs/hexColor", "default": "#0A0A0B" },
-        "textColor": { "description": "기본 글자색 (#RRGGBB)", "$ref": "#/$defs/hexColor", "default": "#F2F2F0" },
+        "name": {
+          "description": "고객(차주·업체) 이름. 문구와 meta에 쓰인다",
+          "type": "string",
+          "minLength": 1
+        },
+        "logoText": {
+          "description": "상단 내비게이션에 보이는 로고 글자",
+          "type": "string",
+          "minLength": 1
+        },
+        "accentColor": {
+          "description": "포인트 컬러 한 가지 (#RRGGBB)",
+          "$ref": "#/$defs/hexColor"
+        },
+        "backgroundColor": {
+          "description": "배경색 (#RRGGBB). 어두운 색을 권장",
+          "$ref": "#/$defs/hexColor",
+          "default": "#0A0A0B"
+        },
+        "textColor": {
+          "description": "기본 글자색 (#RRGGBB)",
+          "$ref": "#/$defs/hexColor",
+          "default": "#F2F2F0"
+        },
         "fonts": {
           "type": "object",
-          "required": ["headline", "body"],
+          "required": [
+            "headline",
+            "body"
+          ],
           "additionalProperties": false,
           "properties": {
-            "headline": { "description": "굵은 대문자 헤드라인 글꼴", "$ref": "#/$defs/font" },
-            "body": { "description": "본문(한국어) 글꼴", "$ref": "#/$defs/font" }
+            "headline": {
+              "description": "굵은 대문자 헤드라인 글꼴",
+              "$ref": "#/$defs/font"
+            },
+            "body": {
+              "description": "본문(한국어) 글꼴",
+              "$ref": "#/$defs/font"
+            }
           }
         }
       }
@@ -50,28 +113,56 @@
       "type": "object",
       "additionalProperties": false,
       "properties": {
-        "maker": { "type": "string" },
-        "model": { "type": "string" },
-        "year": { "type": "integer", "minimum": 1950, "maximum": 2100 },
-        "color": { "type": "string" }
+        "maker": {
+          "type": "string"
+        },
+        "model": {
+          "type": "string"
+        },
+        "year": {
+          "type": "integer",
+          "minimum": 1950,
+          "maximum": 2100
+        },
+        "color": {
+          "type": "string"
+        }
       }
     },
     "contact": {
       "description": "문의 수단. 상단 문의 버튼과 cta 섹션이 함께 쓴다. 비워 둔 항목은 화면에 안 나온다",
       "type": "object",
-      "required": ["kakaoOpenChat"],
+      "required": [
+        "kakaoOpenChat"
+      ],
       "additionalProperties": false,
       "properties": {
-        "kakaoOpenChat": { "description": "카카오톡 오픈채팅 링크 (https://open.kakao.com/o/...)", "type": "string", "pattern": "^(https://open\\.kakao\\.com/.+)?$" },
-        "phone": { "description": "전화번호 (예: 010-1234-5678)", "type": "string", "pattern": "^([0-9]{2,4}-?[0-9]{3,4}-?[0-9]{4})?$" },
-        "instagram": { "description": "인스타그램 아이디 (@ 없이)", "type": "string", "pattern": "^[A-Za-z0-9._]{0,30}$" }
+        "kakaoOpenChat": {
+          "description": "카카오톡 오픈채팅 링크 (https://open.kakao.com/o/...)",
+          "type": "string",
+          "pattern": "^(https://open\\.kakao\\.com/.+)?$"
+        },
+        "phone": {
+          "description": "전화번호 (예: 010-1234-5678)",
+          "type": "string",
+          "pattern": "^([0-9]{2,4}-?[0-9]{3,4}-?[0-9]{4})?$"
+        },
+        "instagram": {
+          "description": "인스타그램 아이디 (@ 없이)",
+          "type": "string",
+          "pattern": "^[A-Za-z0-9._]{0,30}$"
+        }
       }
     },
     "nav": {
       "type": "object",
       "additionalProperties": false,
       "properties": {
-        "ctaLabel": { "description": "상단 문의 버튼 글자", "type": "string", "default": "문의하기" }
+        "ctaLabel": {
+          "description": "상단 문의 버튼 글자",
+          "type": "string",
+          "default": "문의하기"
+        }
       }
     },
     "frames": {
@@ -79,9 +170,21 @@
       "type": "object",
       "additionalProperties": false,
       "properties": {
-        "basePath": { "description": "프레임 폴더의 기본 경로 (public 기준)", "type": "string", "default": "/frames" },
-        "mobileMaxWidth": { "description": "이 폭(px) 미만이면 mobile 프레임 세트를 쓴다", "type": "integer", "default": 768 },
-        "digits": { "description": "프레임 파일 이름의 자릿수 (4 → 0001.webp)", "type": "integer", "default": 4 }
+        "basePath": {
+          "description": "프레임 폴더의 기본 경로 (public 기준)",
+          "type": "string",
+          "default": "/frames"
+        },
+        "mobileMaxWidth": {
+          "description": "이 폭(px) 미만이면 mobile 프레임 세트를 쓴다",
+          "type": "integer",
+          "default": 768
+        },
+        "digits": {
+          "description": "프레임 파일 이름의 자릿수 (4 → 0001.webp)",
+          "type": "integer",
+          "default": 4
+        }
       }
     },
     "sections": {
@@ -90,18 +193,50 @@
       "minItems": 1,
       "items": {
         "type": "object",
-        "required": ["type"],
-        "discriminator": { "propertyName": "type" },
+        "required": [
+          "type"
+        ],
+        "discriminator": {
+          "propertyName": "type"
+        },
         "oneOf": [
-          { "$ref": "#/$defs/scrubSection" },
-          { "$ref": "#/$defs/pickerSection" },
-          { "$ref": "#/$defs/ctaSection" }
+          {
+            "$ref": "#/$defs/scrubSection"
+          },
+          {
+            "$ref": "#/$defs/pickerSection"
+          },
+          {
+            "$ref": "#/$defs/ctaSection"
+          }
         ]
+      }
+    },
+    "credits": {
+      "description": "사진·영상 출처 표기 (CC BY 등 라이선스상 필요할 때). 페이지 맨 아래에 작게 나온다",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "text"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "text": {
+            "type": "string"
+          },
+          "url": {
+            "type": "string"
+          }
+        }
       }
     }
   },
   "$defs": {
-    "hexColor": { "type": "string", "pattern": "^#[0-9A-Fa-f]{6}$" },
+    "hexColor": {
+      "type": "string",
+      "pattern": "^#[0-9A-Fa-f]{6}$"
+    },
     "sectionId": {
       "description": "섹션 이름. 영문 소문자·숫자·하이픈. 프레임 폴더 이름과 주소(#id)로도 쓰인다",
       "type": "string",
@@ -109,90 +244,239 @@
     },
     "font": {
       "type": "object",
-      "required": ["family"],
+      "required": [
+        "family"
+      ],
       "additionalProperties": false,
       "properties": {
-        "family": { "description": "CSS font-family 이름", "type": "string" },
-        "weight": { "description": "굵기 (100~900)", "type": "integer", "minimum": 100, "maximum": 900 },
-        "cssUrl": { "description": "글꼴 CSS 주소 (Google Fonts 등). 비우면 기기에 설치된 글꼴을 쓴다", "type": "string" }
+        "family": {
+          "description": "CSS font-family 이름",
+          "type": "string"
+        },
+        "weight": {
+          "description": "굵기 (100~900)",
+          "type": "integer",
+          "minimum": 100,
+          "maximum": 900
+        },
+        "cssUrl": {
+          "description": "글꼴 CSS 주소 (Google Fonts 등). 비우면 기기에 설치된 글꼴을 쓴다",
+          "type": "string"
+        }
       }
     },
     "copy": {
       "description": "섹션 위에 올라가는 글",
       "type": "object",
-      "required": ["headline"],
+      "required": [
+        "headline"
+      ],
       "additionalProperties": false,
       "properties": {
-        "eyebrow": { "description": "헤드라인 위 작은 글 (예: 01 — DETAIL)", "type": "string" },
-        "headline": { "description": "굵은 대문자 헤드라인. 줄바꿈은 \\n", "type": "string", "minLength": 1 },
-        "accentWord": { "description": "헤드라인 중 포인트 컬러로 칠할 부분 (헤드라인 안에 그대로 있어야 함)", "type": "string" },
-        "subcopy": { "description": "헤드라인 아래 한두 줄 설명", "type": "string" },
-        "position": { "description": "글 위치", "enum": ["left", "right", "center", "bottom-left"], "default": "left" }
+        "eyebrow": {
+          "description": "헤드라인 위 작은 글 (예: 01 — DETAIL)",
+          "type": "string"
+        },
+        "headline": {
+          "description": "굵은 대문자 헤드라인. 줄바꿈은 \\n",
+          "type": "string",
+          "minLength": 1
+        },
+        "accentWord": {
+          "description": "헤드라인 중 포인트 컬러로 칠할 부분 (헤드라인 안에 그대로 있어야 함)",
+          "type": "string"
+        },
+        "subcopy": {
+          "description": "헤드라인 아래 한두 줄 설명",
+          "type": "string"
+        },
+        "position": {
+          "description": "글 위치",
+          "enum": [
+            "left",
+            "right",
+            "center",
+            "bottom-left"
+          ],
+          "default": "left"
+        }
       }
     },
     "frameSet": {
       "description": "이미지 시퀀스. 파일 위치: {basePath}/{folder}/desktop|mobile/0001.webp ...",
       "type": "object",
-      "required": ["folder", "count"],
+      "required": [
+        "folder",
+        "count"
+      ],
       "additionalProperties": false,
       "properties": {
-        "folder": { "description": "프레임 폴더 이름 (보통 섹션 id와 같게)", "$ref": "#/$defs/sectionId" },
-        "count": { "description": "프레임 수. extract-frames 스크립트가 자동으로 채운다 (0 = 아직 없음)", "type": "integer", "minimum": 0, "maximum": 120 },
-        "ext": { "description": "확장자", "enum": ["webp", "jpg", "png"], "default": "webp" },
-        "posterFrame": { "description": "대표 프레임 번호 (1부터). 움직임 줄이기 설정 사용자에게는 이 한 장만 보인다. 비우면 가운데 프레임", "type": "integer", "minimum": 1 }
+        "folder": {
+          "description": "프레임 폴더 이름 (보통 섹션 id와 같게)",
+          "$ref": "#/$defs/sectionId"
+        },
+        "count": {
+          "description": "프레임 수. extract-frames 스크립트가 자동으로 채운다 (0 = 아직 없음)",
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 120
+        },
+        "ext": {
+          "description": "확장자",
+          "enum": [
+            "webp",
+            "jpg",
+            "png"
+          ],
+          "default": "webp"
+        },
+        "posterFrame": {
+          "description": "대표 프레임 번호 (1부터). 움직임 줄이기 설정 사용자에게는 이 한 장만 보인다. 비우면 가운데 프레임",
+          "type": "integer",
+          "minimum": 1
+        }
       }
     },
     "scrubSection": {
       "description": "스크롤하면 프레임이 재생되는 장면",
       "type": "object",
-      "required": ["id", "type", "scrollLength", "frames", "copy"],
+      "required": [
+        "id",
+        "type",
+        "scrollLength",
+        "frames",
+        "copy"
+      ],
       "additionalProperties": false,
       "properties": {
-        "id": { "$ref": "#/$defs/sectionId" },
-        "type": { "const": "scrub" },
-        "scrollLength": { "description": "이 장면을 다 보는 데 필요한 스크롤 길이 (화면 높이의 %, 300 = 3화면)", "type": "integer", "minimum": 100, "maximum": 1000 },
-        "frames": { "$ref": "#/$defs/frameSet" },
-        "copy": { "$ref": "#/$defs/copy" },
+        "id": {
+          "$ref": "#/$defs/sectionId"
+        },
+        "type": {
+          "const": "scrub"
+        },
+        "scrollLength": {
+          "description": "이 장면을 다 보는 데 필요한 스크롤 길이 (화면 높이의 %, 300 = 3화면)",
+          "type": "integer",
+          "minimum": 100,
+          "maximum": 1000
+        },
+        "frames": {
+          "$ref": "#/$defs/frameSet"
+        },
+        "copy": {
+          "$ref": "#/$defs/copy"
+        },
         "copyRange": {
           "description": "글이 보이는 구간 [시작, 끝] (장면 진행률 0~1)",
           "type": "array",
-          "prefixItems": [{ "type": "number", "minimum": 0, "maximum": 1 }, { "type": "number", "minimum": 0, "maximum": 1 }],
+          "prefixItems": [
+            {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1
+            },
+            {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1
+            }
+          ],
           "minItems": 2,
           "maxItems": 2,
-          "default": [0.15, 0.75]
+          "default": [
+            0.15,
+            0.75
+          ]
+        },
+        "stats": {
+          "description": "화면 구석의 작은 사양 패널 (최대 4줄, 예: ENGINE / Flat-6)",
+          "type": "array",
+          "maxItems": 4,
+          "items": {
+            "type": "object",
+            "required": [
+              "label",
+              "value"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "label": {
+                "type": "string"
+              },
+              "value": {
+                "type": "string"
+              }
+            }
+          }
         }
       }
     },
     "pickerSection": {
       "description": "버튼을 누르면 차 색·휠이 바뀌는 선택 섹션",
       "type": "object",
-      "required": ["id", "type", "copy", "options"],
+      "required": [
+        "id",
+        "type",
+        "copy",
+        "options"
+      ],
       "additionalProperties": false,
       "properties": {
-        "id": { "$ref": "#/$defs/sectionId" },
-        "type": { "const": "picker" },
-        "copy": { "$ref": "#/$defs/copy" },
-        "defaultOption": { "description": "처음 선택돼 있을 옵션 id. 비우면 첫 번째", "type": "string" },
+        "id": {
+          "$ref": "#/$defs/sectionId"
+        },
+        "type": {
+          "const": "picker"
+        },
+        "copy": {
+          "$ref": "#/$defs/copy"
+        },
+        "defaultOption": {
+          "description": "처음 선택돼 있을 옵션 id. 비우면 첫 번째",
+          "type": "string"
+        },
         "options": {
           "type": "array",
           "minItems": 2,
           "maxItems": 6,
           "items": {
             "type": "object",
-            "required": ["id", "label", "swatch", "image"],
+            "required": [
+              "id",
+              "label",
+              "swatch",
+              "image"
+            ],
             "additionalProperties": false,
             "properties": {
-              "id": { "type": "string", "pattern": "^[a-z0-9-]+$" },
-              "label": { "description": "버튼 글자 (예: 매트 블랙)", "type": "string" },
-              "swatch": { "description": "버튼 색 견본 (#RRGGBB)", "$ref": "#/$defs/hexColor" },
+              "id": {
+                "type": "string",
+                "pattern": "^[a-z0-9-]+$"
+              },
+              "label": {
+                "description": "버튼 글자 (예: 매트 블랙)",
+                "type": "string"
+              },
+              "swatch": {
+                "description": "버튼 색 견본 (#RRGGBB)",
+                "$ref": "#/$defs/hexColor"
+              },
               "image": {
                 "description": "이 옵션의 정지 이미지 (public 기준 경로)",
                 "type": "object",
-                "required": ["desktop", "mobile"],
+                "required": [
+                  "desktop",
+                  "mobile"
+                ],
                 "additionalProperties": false,
                 "properties": {
-                  "desktop": { "type": "string" },
-                  "mobile": { "type": "string" }
+                  "desktop": {
+                    "type": "string"
+                  },
+                  "mobile": {
+                    "type": "string"
+                  }
                 }
               }
             }
@@ -203,18 +487,39 @@
     "ctaSection": {
       "description": "문의 섹션. 연락처는 맨 위 contact 값을 쓴다",
       "type": "object",
-      "required": ["id", "type", "copy"],
+      "required": [
+        "id",
+        "type",
+        "copy"
+      ],
       "additionalProperties": false,
       "properties": {
-        "id": { "$ref": "#/$defs/sectionId" },
-        "type": { "const": "cta" },
-        "copy": { "$ref": "#/$defs/copy" },
-        "kakaoLabel": { "description": "카카오톡 버튼 글자", "type": "string", "default": "카카오톡으로 문의하기" },
+        "id": {
+          "$ref": "#/$defs/sectionId"
+        },
+        "type": {
+          "const": "cta"
+        },
+        "copy": {
+          "$ref": "#/$defs/copy"
+        },
+        "kakaoLabel": {
+          "description": "카카오톡 버튼 글자",
+          "type": "string",
+          "default": "카카오톡으로 문의하기"
+        },
         "background": {
           "description": "배경 이미지 (선택, public 기준 경로)",
           "type": "object",
           "additionalProperties": false,
-          "properties": { "desktop": { "type": "string" }, "mobile": { "type": "string" } }
+          "properties": {
+            "desktop": {
+              "type": "string"
+            },
+            "mobile": {
+              "type": "string"
+            }
+          }
         }
       }
     }
