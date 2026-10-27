@@ -15,6 +15,9 @@
 //   --quality <n>        WebP 품질 0~100 (기본 75)
 //   --mobile-src <파일>  모바일용 세로 영상이 따로 있으면 지정 (없으면 원본에서 잘라냄)
 //   --mobile-aspect <w:h> 원본에서 잘라낼 모바일 비율 (기본 3:4)
+//   --focus-x <0~1>      모바일로 자를 때 가운데로 올 가로 위치 (기본 0.5, 차가 오른쪽에 있으면 0.7 등)
+//   --start <초>         영상의 이 지점부터 사용 (예: 38.5)
+//   --duration <초>      이 길이만큼만 사용 (예: 5)
 import { execFileSync } from 'node:child_process';
 import { existsSync, mkdirSync, readdirSync, readFileSync, rmSync, statSync, writeFileSync } from 'node:fs';
 import { join, resolve } from 'node:path';
@@ -27,7 +30,7 @@ const MOBILE_WIDTH = 828;
 // ── 인자 읽기 ───────────────────────────────────────────────
 function parseArgs(argv) {
   const positional = [];
-  const opts = { fps: 24, max: 120, quality: 75, 'mobile-src': null, 'mobile-aspect': '3:4' };
+  const opts = { fps: 24, max: 120, quality: 75, 'mobile-src': null, 'mobile-aspect': '3:4', start: null, duration: null, 'focus-x': 0.5 };
   for (let i = 0; i < argv.length; i++) {
     if (argv[i].startsWith('--')) opts[argv[i].slice(2)] = argv[++i];
     else positional.push(argv[i]);
@@ -76,9 +79,15 @@ function freshDir(dir) {
   mkdirSync(dir, { recursive: true });
 }
 
-function runFfmpeg(src, filter, outDir, quality, max) {
+// 잘라 쓸 구간 (입력 앞에 -ss/-t 를 두면 그 구간만 읽어서 빠르다)
+function trimArgs(start, duration) {
+  return [...(start != null ? ['-ss', String(start)] : []), ...(duration != null ? ['-t', String(duration)] : [])];
+}
+
+function runFfmpeg(src, filter, outDir, quality, max, trim = []) {
   execFileSync('ffmpeg', [
     '-v', 'error', '-y',
+    ...trim,
     '-i', src,
     '-vf', filter,
     '-frames:v', String(max), // 반올림 오차로 한 장 더 나오는 것 방지
@@ -141,7 +150,12 @@ if (mobileSrc && !existsSync(mobileSrc)) fail(`모바일 영상 파일이 없습
 
 const max = Number(opts.max);
 const quality = Number(opts.quality);
-const seconds = durationOf(src);
+const start = opts.start != null ? Number(opts.start) : null;
+const total = durationOf(src);
+// 실제로 쓰는 길이 = 지정한 duration, 없으면 start 부터 끝까지
+const seconds = opts.duration != null ? Number(opts.duration) : total - (start ?? 0);
+if (seconds <= 0) fail('--start / --duration 구간이 영상 길이를 벗어났습니다.');
+const trim = trimArgs(start, opts.duration != null ? seconds : null);
 const fps = chooseFps(Number(opts.fps), seconds, max);
 if (fps < Number(opts.fps)) {
   console.log(`영상이 ${seconds.toFixed(1)}초라 ${opts.fps}fps면 ${max}장을 넘어서 ${fps}fps로 낮춥니다.`);
@@ -156,13 +170,16 @@ const mobileDir = join(outBase, 'mobile');
 // PC: 가로 1920px. 높이는 비율대로(-2 = 짝수로 맞춤)
 console.log(`\n[${sectionId}] PC 프레임 추출 (${DESKTOP_WIDTH}px, ${fps}fps)`);
 freshDir(desktopDir);
-const desktopCount = runFfmpeg(src, `fps=${fps},scale=${DESKTOP_WIDTH}:-2:flags=lanczos`, desktopDir, quality, max);
+const desktopCount = runFfmpeg(src, `fps=${fps},scale=${DESKTOP_WIDTH}:-2:flags=lanczos`, desktopDir, quality, max, trim);
 
 // 모바일: 세로 화면을 꽉 채우므로, 가로 영상이면 가운데를 세로 비율로 잘라 해상도를 아낀다
 console.log(`[${sectionId}] 모바일 프레임 추출 (${MOBILE_WIDTH}px)`);
 freshDir(mobileDir);
 const [aw, ah] = opts['mobile-aspect'].split(':').map(Number);
-const crop = mobileSrc ? '' : `crop='min(iw,ih*${aw}/${ah})':'min(ih,iw*${ah}/${aw})',`;
+// 잘라낼 폭 cw = 높이 × 3/4. 잘라낼 위치는 focus-x 가 가운데 오도록 하되 화면 밖으로는 안 나가게.
+const fx = Number(opts['focus-x']);
+const cw = `min(iw,ih*${aw}/${ah})`;
+const crop = mobileSrc ? '' : `crop='${cw}':'min(ih,iw*${ah}/${aw})':'max(0,min(iw-${cw},iw*${fx}-${cw}/2))':0,`;
 // 모바일 영상을 따로 줬으면 그 영상의 길이에 맞춰 fps를 다시 정한다 (장수를 PC와 맞추기 위해)
 const mobileFps = mobileSrc ? desktopCount / durationOf(mobileSrc) : fps;
 const mobileCount = runFfmpeg(
@@ -171,6 +188,7 @@ const mobileCount = runFfmpeg(
   mobileDir,
   quality,
   desktopCount,
+  mobileSrc ? [] : trim, // 모바일 영상을 따로 줬으면 그 영상 전체를 쓴다
 );
 
 if (mobileCount !== desktopCount) {
