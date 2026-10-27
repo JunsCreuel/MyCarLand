@@ -1,0 +1,8 @@
+/* Phase 1 확인용 임시 스타일. Phase 3~5에서 실제 디자인으로 바뀐다. */
+body { margin: 0; padding: 32px 20px; background: #0a0a0b; color: #f2f2f0; font: 15px/1.6 system-ui, sans-serif; }
+h1 { margin: 0 0 4px; font-size: 22px; }
+.muted { color: #8b8b8b; }
+ol, ul { padding-left: 20px; }
+li { margin: 6px 0; }
+code { background: #1c1c1f; padding: 1px 6px; border-radius: 4px; }
+.swatch { display: inline-block; width: 12px; height: 12px; border-radius: 50%; vertical-align: middle; margin-right: 6px; }
