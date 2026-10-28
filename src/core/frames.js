@@ -19,14 +19,6 @@ export class FrameSequence {
     this.requested = new Set();
     this.onFrameLoaded = null; // (index) => void — 렌더러가 다시 그릴지 판단하는 데 쓴다
     this.allStarted = false;
-    this.settled = 0; // 받기를 끝낸(성공이든 실패든) 프레임 수
-    // 전부 받으면 풀리는 약속 — 자동 재생은 이걸 기다렸다가 시작해야 중간에 안 끊긴다
-    this.ready = new Promise((resolve) => (this.resolveReady = resolve));
-  }
-
-  markSettled() {
-    this.settled += 1;
-    if (this.settled === this.count) this.resolveReady();
   }
 
   // 프레임 하나 받기. decode()까지 기다려서 그릴 때 끊기지 않게 한다.
@@ -45,8 +37,7 @@ export class FrameSequence {
       .catch(() => {
         // 한 장이 깨져도 전체가 멈추지 않게: 그 자리는 가까운 프레임이 대신한다
         console.warn(`프레임을 불러오지 못했습니다: ${this.urls[index]}`);
-      })
-      .finally(() => this.markSettled());
+      });
   }
 
   loadFirst(index = 0) {

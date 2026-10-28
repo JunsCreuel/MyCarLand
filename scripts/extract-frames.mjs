@@ -12,8 +12,7 @@
 // 옵션:
 //   --fps <n>            초당 프레임 수 (기본 24). 프레임이 120장을 넘으면 자동으로 낮춘다
 //   --max <n>            최대 프레임 수 (기본 120)
-//   --quality <n>        PC 프레임 WebP 품질 0~100 (기본 82)
-//   --mobile-quality <n> 모바일 프레임 WebP 품질 (기본 = --quality). 용량을 줄이려면 여기를 낮춘다
+//   --quality <n>        WebP 품질 0~100 (기본 75)
 //   --mobile-src <파일>  모바일용 세로 영상이 따로 있으면 지정 (없으면 원본에서 잘라냄)
 //   --mobile-aspect <w:h> 원본에서 잘라낼 모바일 비율 (기본 3:4)
 //   --focus-x <0~1>      모바일로 자를 때 가운데로 올 가로 위치 (기본 0.5, 차가 오른쪽에 있으면 0.7 등)
@@ -31,7 +30,7 @@ const MOBILE_WIDTH = 828;
 // ── 인자 읽기 ───────────────────────────────────────────────
 function parseArgs(argv) {
   const positional = [];
-  const opts = { fps: 24, max: 120, quality: 82, 'mobile-quality': null, 'mobile-src': null, 'mobile-aspect': '3:4', start: null, duration: null, 'focus-x': 0.5 };
+  const opts = { fps: 24, max: 120, quality: 75, 'mobile-src': null, 'mobile-aspect': '3:4', start: null, duration: null, 'focus-x': 0.5 };
   for (let i = 0; i < argv.length; i++) {
     if (argv[i].startsWith('--')) opts[argv[i].slice(2)] = argv[++i];
     else positional.push(argv[i]);
@@ -151,7 +150,6 @@ if (mobileSrc && !existsSync(mobileSrc)) fail(`모바일 영상 파일이 없습
 
 const max = Number(opts.max);
 const quality = Number(opts.quality);
-const mobileQuality = Number(opts['mobile-quality'] ?? opts.quality);
 const start = opts.start != null ? Number(opts.start) : null;
 const total = durationOf(src);
 // 실제로 쓰는 길이 = 지정한 duration, 없으면 start 부터 끝까지
@@ -188,7 +186,7 @@ const mobileCount = runFfmpeg(
   mobileSrc ?? src,
   `fps=${mobileFps},${crop}scale=${MOBILE_WIDTH}:-2:flags=lanczos`,
   mobileDir,
-  mobileQuality,
+  quality,
   desktopCount,
   mobileSrc ? [] : trim, // 모바일 영상을 따로 줬으면 그 영상 전체를 쓴다
 );

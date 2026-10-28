@@ -48,11 +48,12 @@
     {
       "id": "hero",
       "type": "scrub",
+      "scrollLength": 300,
       "frames": {
         "folder": "hero",
-        "count": 120,
+        "count": 108,
         "ext": "webp",
-        "alt": "가까이에서 돌아보는 911 타르가의 휠과 실내"
+        "alt": "멀리서 다가오는 청록색 포르쉐 911 타르가"
       },
       "copy": {
         "eyebrow": "PORSCHE 911 TARGA",
@@ -61,6 +62,10 @@
         "subcopy": "매일 타는 내 차, 오늘은 주인공으로.",
         "position": "bottom-left"
       },
+      "copyRange": [
+        0,
+        0.55
+      ],
       "stats": [
         {
           "label": "ENGINE",
@@ -74,51 +79,34 @@
           "label": "COLOR",
           "value": "Aqua Blue"
         }
-      ],
-      "playback": "auto",
-      "fps": 30,
-      "onEnd": "next"
+      ]
     },
     {
-      "id": "process",
-      "type": "steps",
-      "copy": {
-        "eyebrow": "01 — HOW IT'S MADE",
-        "headline": "THREE STEPS.\nONE LINK.",
-        "accentWord": "ONE LINK.",
-        "subcopy": "휴대폰으로 찍은 사진 몇 장이면, 이런 페이지가 내 차로 만들어져요."
+      "id": "detail",
+      "type": "scrub",
+      "scrollLength": 250,
+      "frames": {
+        "folder": "detail",
+        "count": 108,
+        "ext": "webp",
+        "alt": "가까이에서 돌아보는 911 타르가의 휠과 실내"
       },
-      "steps": [
-        {
-          "label": "SHOOT",
-          "title": "휴대폰으로 촬영",
-          "text": "가이드를 보며 정해진 자리에서 12장. 15분이면 끝나요."
-        },
-        {
-          "label": "GENERATE",
-          "title": "AI 장면 제작",
-          "text": "사진으로 영화 같은 장면과 영상을 만들어요. 실내는 실제 사진만 이어 붙여요."
-        },
-        {
-          "label": "LAUNCH",
-          "title": "내 차 사이트 완성",
-          "text": "스크롤하면 내 차가 달리는 나만의 페이지. 링크 하나로 공유해요."
-        }
-      ],
-      "actions": [
-        {
-          "label": "촬영 가이드 보기",
-          "href": "guide"
-        },
-        {
-          "label": "카카오톡으로 문의하기",
-          "href": "kakao"
-        }
+      "copy": {
+        "eyebrow": "01 — DETAIL",
+        "headline": "CLOSE ENOUGH\nTO TOUCH.",
+        "accentWord": "TOUCH.",
+        "subcopy": "휠, 타르가 바, 오렌지 가죽 시트. 매일 지나치던 디테일을 가장 가까이에서.",
+        "position": "right"
+      },
+      "copyRange": [
+        0.15,
+        0.85
       ]
     },
     {
       "id": "drive",
       "type": "scrub",
+      "scrollLength": 300,
       "frames": {
         "folder": "drive",
         "count": 120,
@@ -132,9 +120,10 @@
         "subcopy": "곧은 길보다 굽은 길. 이 차가 가장 빛나는 순간.",
         "position": "left"
       },
-      "playback": "auto",
-      "fps": 30,
-      "onEnd": "hold"
+      "copyRange": [
+        0.2,
+        0.85
+      ]
     },
     {
       "id": "finish",
@@ -204,8 +193,5 @@
       "text": "Video: “Two Porsche 911 Targa driving as viewed from FPV drone” by SE FPV, CC BY 3.0, via Wikimedia Commons",
       "url": "https://commons.wikimedia.org/wiki/File:Two_Porsche_911_Targa_driving_as_viewed_from_FPV_drone.webm"
     }
-  ],
-  "scroll": {
-    "mode": "snap"
-  }
+  ]
 }

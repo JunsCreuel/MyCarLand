@@ -5,12 +5,11 @@ import { setupScroll, ScrollTrigger } from './core/scroll.js';
 import { createScrub } from './sections/scrub.js';
 import { createPicker } from './sections/picker.js';
 import { createCta } from './sections/cta.js';
-import { createSteps } from './sections/steps.js';
 import { createNav } from './sections/nav.js';
 import { escapeHtml } from './sections/copy.js';
 import './styles/site.css';
 
-const BUILDERS = { scrub: createScrub, picker: createPicker, cta: createCta, steps: createSteps };
+const BUILDERS = { scrub: createScrub, picker: createPicker, cta: createCta };
 
 // 1) 브랜드 색·글꼴을 CSS 변수로 (스타일시트는 변수만 쓴다)
 const { brand } = site;
@@ -42,9 +41,8 @@ footer.innerHTML = `
 app.append(footer);
 
 // 4) 스크롤 연결. DOM 이 다 붙은 뒤에 해야 ScrollTrigger 가 위치를 제대로 잰다.
-//    controller 는 "다음 화면으로" 같은 이동을 섹션이 요청할 때 쓴다 (자동 재생이 끝났을 때 등).
-const controller = setupScroll(site, sections.map((s) => s.el));
-sections.forEach((s) => s.init(controller));
+setupScroll();
+sections.forEach((s) => s.init());
 
 // 글꼴이 늦게 도착하면 글 높이가 바뀌므로 위치를 다시 잰다
 document.fonts?.ready.then(() => ScrollTrigger.refresh());
