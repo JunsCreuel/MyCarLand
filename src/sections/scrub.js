@@ -5,6 +5,9 @@
 //     <div class="scene__sticky">       ← position: sticky 로 화면에 고정
 //   ScrollTrigger 가 알려 주는 진행률(0~1)을 프레임 번호로 바꿔서 그린다.
 //
+//   단, 한 화면씩 넘기는 snap 모드에서는 섹션이 한 화면 높이로 고정되고
+//   휠·스와이프 양만큼 영상이 앞뒤로 재생된다. 영상 끝까지 간 뒤에 한 번 더 굴리면 다음 화면 (snap.js 가 판단).
+//
 // playback: "auto" — 한 화면짜리 섹션. 화면에 들어오면 영상처럼 스스로 재생된다.
 //   프레임을 전부 받은 뒤에 재생을 시작해서 중간에 끊기지 않게 한다.
 //   끝나면 onEnd 에 따라 멈추거나("hold"), 다음 화면으로 넘어가거나("next"), 반복한다("loop").
@@ -17,15 +20,17 @@ import { copyHtml, escapeHtml, statsHtml } from './copy.js';
 export function createScrub(section, site, { isFirst }) {
   const reduced = prefersReducedMotion();
   const auto = section.playback === 'auto';
+  // snap 모드 + 스크롤 재생: 한 화면에 고정된 채 휠·스와이프로 영상을 넘긴다
+  const screen = !auto && site.scroll?.mode === 'snap';
   const { count, posterFrame } = section.frames;
   const poster = (posterFrame ?? Math.ceil(count / 2)) - 1; // 0부터 세는 번호로
   const [copyFrom, copyTo] = section.copyRange ?? [0.15, 0.75];
 
   const el = document.createElement('section');
-  el.className = `scene scene--scrub${reduced ? ' is-static' : ''}${auto ? ' is-auto' : ''}`;
+  el.className = `scene scene--scrub${reduced ? ' is-static' : ''}${auto ? ' is-auto' : ''}${screen ? ' is-screen' : ''}`;
   el.id = section.id;
   // 자동 재생이거나 동작 줄이기면 한 화면만, 아니면 설정한 스크롤 길이만큼
-  el.style.setProperty('--scroll-length', auto || reduced ? '100' : String(section.scrollLength));
+  el.style.setProperty('--scroll-length', auto || screen || reduced ? '100' : String(section.scrollLength));
   el.innerHTML = `
     <div class="scene__sticky">
       <canvas class="scene__canvas" ${section.frames.alt ? `role="img" aria-label="${escapeHtml(section.frames.alt)}"` : 'aria-hidden="true"'}></canvas>
@@ -34,6 +39,7 @@ export function createScrub(section, site, { isFirst }) {
         ${copyHtml(section.copy, isFirst ? 'h1' : 'h2')}
       </div>
       ${statsHtml(section.stats)}
+      ${screen && isFirst ? '<div class="scene__hint" aria-hidden="true">SCROLL</div>' : ''}
     </div>`;
 
   const canvas = el.querySelector('canvas');
@@ -134,6 +140,62 @@ export function createScrub(section, site, { isFirst }) {
         if (self.isActive) loadRest();
       },
     });
+  }
+
+  // ── snap 모드에서 스크롤로 재생 ─────────────────────────────
+  // 휠 한 칸(약 100px)씩 오는 입력을 그대로 그리면 계단처럼 툭툭 넘어가므로,
+  // 목표 위치(target)만 옮기고 화면은 매 프레임 목표를 부드럽게 따라가게 한다.
+  if (screen) {
+    const last = Math.max(0, count - 1);
+    const distance = () => ((section.scrollLength ?? 200) / 100) * window.innerHeight; // 이만큼 굴리면 영상 끝까지
+    const hint = el.querySelector('.scene__hint');
+    let target = 0;
+    let raf = 0;
+    let prevTime = 0;
+    function loop(now) {
+      const dt = Math.min(64, now - (prevTime || now));
+      prevTime = now;
+      const k = 1 - Math.exp(-dt / 90); // 약 0.1초 만에 목표에 가까워지는 속도
+      let pos = current + (target - current) * k;
+      if (Math.abs(target - pos) < 0.01) pos = target;
+      show(pos);
+      if (pos !== target) {
+        raf = requestAnimationFrame(loop);
+        return;
+      }
+      raf = 0;
+      prevTime = 0;
+      // 멈춘 화면은 한 장으로 맞춘다 (두 장이 겹친 채 남으면 고스팅처럼 보인다)
+      const whole = Math.round(target);
+      if (whole !== target) {
+        settleTimer = setTimeout(() => {
+          target = whole;
+          kick();
+        }, SETTLE_DELAY);
+      }
+    }
+    function kick() {
+      clearTimeout(settleTimer);
+      if (!raf) raf = requestAnimationFrame(loop);
+    }
+    // snap.js 가 쓰는 인터페이스: 이 방향으로 더 재생할 게 남았나 / px 만큼 재생
+    el.scrubber = {
+      canAdvance: (dir) => last > 0 && (dir > 0 ? target < last - 0.001 : target > 0.001),
+      advance(px) {
+        target = Math.max(0, Math.min(last, target + (px / distance()) * last));
+        if (hint) hint.classList.toggle('is-hidden', target > 1);
+        kick();
+      },
+    };
+    return {
+      el,
+      init() {
+        watchNear();
+        new IntersectionObserver(([entry]) => copy.classList.toggle('is-visible', entry.isIntersecting), {
+          threshold: 0.6,
+        }).observe(el);
+      },
+    };
   }
 
   if (!auto) {
