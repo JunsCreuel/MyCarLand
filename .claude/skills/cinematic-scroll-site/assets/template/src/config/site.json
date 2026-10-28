@@ -75,7 +75,7 @@
         }
       ],
       "playback": "scroll",
-      "scrollLength": 200
+      "scrollLength": 450
     },
     {
       "id": "process",
@@ -131,7 +131,7 @@
         "position": "left"
       },
       "playback": "scroll",
-      "scrollLength": 200
+      "scrollLength": 450
     },
     {
       "id": "finish",
