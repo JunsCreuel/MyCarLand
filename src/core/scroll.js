@@ -26,7 +26,6 @@ export function setupScroll(site, sectionEls) {
   let controller;
 
   if (mode === 'snap') {
-    document.documentElement.classList.add('is-snap');
     controller = setupSnap(sectionEls);
   } else if (!prefersReducedMotion()) {
     const lenis = new Lenis({ duration: 1.1, smoothWheel: true }); // duration 이 클수록 더 미끄러지듯

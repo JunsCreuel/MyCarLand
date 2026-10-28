@@ -50,7 +50,7 @@
       "type": "scrub",
       "frames": {
         "folder": "hero",
-        "count": 181,
+        "count": 120,
         "ext": "webp",
         "alt": "가까이에서 돌아보는 911 타르가의 휠과 실내"
       },
@@ -75,8 +75,9 @@
           "value": "Aqua Blue"
         }
       ],
-      "playback": "scroll",
-      "scrollLength": 450
+      "playback": "auto",
+      "fps": 30,
+      "onEnd": "next"
     },
     {
       "id": "process",
@@ -120,7 +121,7 @@
       "type": "scrub",
       "frames": {
         "folder": "drive",
-        "count": 180,
+        "count": 120,
         "ext": "webp",
         "alt": "굽은 시골길을 달리는 911 타르가 두 대"
       },
@@ -131,8 +132,9 @@
         "subcopy": "곧은 길보다 굽은 길. 이 차가 가장 빛나는 순간.",
         "position": "left"
       },
-      "playback": "scroll",
-      "scrollLength": 450
+      "playback": "auto",
+      "fps": 30,
+      "onEnd": "hold"
     },
     {
       "id": "finish",

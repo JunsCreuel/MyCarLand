@@ -6,8 +6,6 @@
 // - 스크롤 이벤트는 1프레임에 여러 번 올 수 있다. 그때마다 그리면 낭비라서
 //   "다음에 그릴 이미지"만 기억해 두고 requestAnimationFrame 에서 한 번만 그린다.
 // - 같은 이미지·같은 크기면 다시 그리지 않는다.
-// - 크기를 바꿔 그릴 때 브라우저 기본값(imageSmoothingQuality = 'low')은 거칠게 줄이고 늘려서
-//   잔디·차선이 자글자글해 보인다. 'high' 로 그린다 (캔버스 크기가 바뀌면 이 설정이 초기화되므로 매번 지정).
 // - devicePixelRatio 를 2까지만 쓴다. 3배 화면(최신 폰)에서 3배로 그리면
 //   메모리와 그리는 시간만 늘고 눈으로는 차이가 거의 없다.
 const MAX_DPR = 2;
@@ -54,8 +52,6 @@ export class CanvasRenderer {
 
   // cover 계산: 캔버스를 빈틈없이 덮는 가장 작은 배율로 확대하고 가운데 맞춤
   drawCover(image) {
-    this.ctx.imageSmoothingEnabled = true;
-    this.ctx.imageSmoothingQuality = 'high';
     const scale = Math.max(this.width / image.naturalWidth, this.height / image.naturalHeight);
     const w = image.naturalWidth * scale;
     const h = image.naturalHeight * scale;

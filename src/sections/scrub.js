@@ -5,9 +5,6 @@
 //     <div class="scene__sticky">       ← position: sticky 로 화면에 고정
 //   ScrollTrigger 가 알려 주는 진행률(0~1)을 프레임 번호로 바꿔서 그린다.
 //
-//   단, 한 화면씩 넘기는 snap 모드에서는 섹션이 한 화면 높이로 고정되고
-//   휠·스와이프 양만큼 영상이 앞뒤로 재생된다. 영상 끝까지 간 뒤에 한 번 더 굴리면 다음 화면 (snap.js 가 판단).
-//
 // playback: "auto" — 한 화면짜리 섹션. 화면에 들어오면 영상처럼 스스로 재생된다.
 //   프레임을 전부 받은 뒤에 재생을 시작해서 중간에 끊기지 않게 한다.
 //   끝나면 onEnd 에 따라 멈추거나("hold"), 다음 화면으로 넘어가거나("next"), 반복한다("loop").
@@ -20,17 +17,15 @@ import { copyHtml, escapeHtml, statsHtml } from './copy.js';
 export function createScrub(section, site, { isFirst }) {
   const reduced = prefersReducedMotion();
   const auto = section.playback === 'auto';
-  // snap 모드 + 스크롤 재생: 한 화면에 고정된 채 휠·스와이프로 영상을 넘긴다
-  const screen = !auto && site.scroll?.mode === 'snap';
   const { count, posterFrame } = section.frames;
   const poster = (posterFrame ?? Math.ceil(count / 2)) - 1; // 0부터 세는 번호로
   const [copyFrom, copyTo] = section.copyRange ?? [0.15, 0.75];
 
   const el = document.createElement('section');
-  el.className = `scene scene--scrub${reduced ? ' is-static' : ''}${auto ? ' is-auto' : ''}${screen ? ' is-screen' : ''}`;
+  el.className = `scene scene--scrub${reduced ? ' is-static' : ''}${auto ? ' is-auto' : ''}`;
   el.id = section.id;
   // 자동 재생이거나 동작 줄이기면 한 화면만, 아니면 설정한 스크롤 길이만큼
-  el.style.setProperty('--scroll-length', auto || screen || reduced ? '100' : String(section.scrollLength));
+  el.style.setProperty('--scroll-length', auto || reduced ? '100' : String(section.scrollLength));
   el.innerHTML = `
     <div class="scene__sticky">
       <canvas class="scene__canvas" ${section.frames.alt ? `role="img" aria-label="${escapeHtml(section.frames.alt)}"` : 'aria-hidden="true"'}></canvas>
@@ -39,7 +34,6 @@ export function createScrub(section, site, { isFirst }) {
         ${copyHtml(section.copy, isFirst ? 'h1' : 'h2')}
       </div>
       ${statsHtml(section.stats)}
-      ${screen && isFirst ? '<div class="scene__hint" aria-hidden="true">SCROLL</div>' : ''}
     </div>`;
 
   const canvas = el.querySelector('canvas');
@@ -100,34 +94,6 @@ export function createScrub(section, site, { isFirst }) {
     return { el, init() {} };
   }
 
-  // 스크롤이 멈추면 두 장이 겹친 상태로 남지 않게, 가장 가까운 한 장으로 살짝 맞춰 준다.
-  // 겹쳐 그리기(크로스페이드)는 움직이는 동안에는 끊김을 가려 주지만, 멈춘 화면에서는
-  // 차와 차선이 이중으로 보여서(고스팅) 화질이 나빠 보인다.
-  const SETTLE_DELAY = 120; // 마지막 스크롤 갱신 후 이만큼 조용하면 "멈췄다"로 본다 (ms)
-  const SETTLE_TIME = 160; // 가까운 장으로 옮겨 가는 시간 (ms). 0.5장 이하라 눈에는 마무리 감속처럼 보인다
-  let settleTimer = 0;
-  let settleRaf = 0;
-  function cancelSettle() {
-    clearTimeout(settleTimer);
-    cancelAnimationFrame(settleRaf);
-    settleRaf = 0;
-  }
-  function scheduleSettle() {
-    cancelSettle();
-    settleTimer = setTimeout(() => {
-      const from = current;
-      const to = Math.round(current);
-      if (from === to) return;
-      const t0 = performance.now();
-      const step = (now) => {
-        const k = Math.min(1, (now - t0) / SETTLE_TIME);
-        show(from + (to - from) * (1 - (1 - k) ** 3));
-        settleRaf = k < 1 ? requestAnimationFrame(step) : 0;
-      };
-      settleRaf = requestAnimationFrame(step);
-    }, SETTLE_DELAY);
-  }
-
   // 한 화면 전부터 나머지 프레임을 받기 시작 (두 방식 공통)
   function watchNear() {
     ScrollTrigger.create({
@@ -142,65 +108,6 @@ export function createScrub(section, site, { isFirst }) {
     });
   }
 
-  // ── snap 모드에서 스크롤로 재생 ─────────────────────────────
-  // 휠 한 칸(약 100px)씩 오는 입력을 그대로 그리면 계단처럼 툭툭 넘어가므로,
-  // 목표 위치(target)만 옮기고 화면은 매 프레임 목표를 부드럽게 따라가게 한다.
-  if (screen) {
-    const last = Math.max(0, count - 1);
-    const distance = () => ((section.scrollLength ?? 200) / 100) * window.innerHeight; // 이만큼 굴리면 영상 끝까지
-    const hint = el.querySelector('.scene__hint');
-    let target = 0;
-    let raf = 0;
-    let prevTime = 0;
-    function loop(now) {
-      const dt = Math.min(64, now - (prevTime || now));
-      prevTime = now;
-      // 시간 상수 160ms: 휠 한 칸씩(약 0.1초 간격) 오는 입력 사이를 이어서, 칸마다 섰다 갔다 하지 않게 한다
-      const k = 1 - Math.exp(-dt / 160);
-      let pos = current + (target - current) * k;
-      if (Math.abs(target - pos) < 0.01) pos = target;
-      show(pos);
-      if (pos !== target) {
-        raf = requestAnimationFrame(loop);
-        return;
-      }
-      raf = 0;
-      prevTime = 0;
-      // 멈춘 화면은 한 장으로 맞춘다 (두 장이 겹친 채 남으면 고스팅처럼 보인다)
-      const whole = Math.round(target);
-      if (whole !== target) {
-        settleTimer = setTimeout(() => {
-          target = whole;
-          kick();
-        }, SETTLE_DELAY);
-      }
-    }
-    function kick() {
-      clearTimeout(settleTimer);
-      if (!raf) raf = requestAnimationFrame(loop);
-    }
-    // snap.js 가 쓰는 인터페이스: 이 방향으로 더 재생할 게 남았나 / px 만큼 재생하고 영상 끝을 넘어 남은 px 를 돌려줌
-    el.scrubber = {
-      canAdvance: (dir) => last > 0 && (dir > 0 ? target < last - 0.001 : target > 0.001),
-      advance(px) {
-        const want = target + (px / distance()) * last;
-        target = Math.max(0, Math.min(last, want));
-        if (hint) hint.classList.toggle('is-hidden', target > 1);
-        kick();
-        return last ? ((want - target) / last) * distance() : px;
-      },
-    };
-    return {
-      el,
-      init() {
-        watchNear();
-        new IntersectionObserver(([entry]) => copy.classList.toggle('is-visible', entry.isIntersecting), {
-          threshold: 0.6,
-        }).observe(el);
-      },
-    };
-  }
-
   if (!auto) {
     return {
       el,
@@ -213,11 +120,7 @@ export function createScrub(section, site, { isFirst }) {
           end: 'bottom bottom',
           onUpdate: (self) => {
             const p = self.progress;
-            if (count) {
-              cancelSettle();
-              show(p * (count - 1));
-              scheduleSettle();
-            }
+            if (count) show(p * (count - 1));
             copy.classList.toggle('is-visible', p >= copyFrom && p <= copyTo);
           },
         });

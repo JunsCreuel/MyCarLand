@@ -165,18 +165,6 @@
         }
       }
     },
-    "pages": {
-      "description": "함께 빌드할 보조 페이지. 고객 유형마다 켜고 끈다",
-      "type": "object",
-      "additionalProperties": false,
-      "properties": {
-        "guide": {
-          "description": "촬영 가이드 페이지(guide.html)를 빌드에 넣을지. 고객이 사진을 찍어 보내는 서비스일 때만 true (딜러·매장 소개면 보통 false)",
-          "type": "boolean",
-          "default": true
-        }
-      }
-    },
     "frames": {
       "description": "프레임 공통 설정",
       "type": "object",
@@ -346,10 +334,10 @@
           "$ref": "#/$defs/sectionId"
         },
         "count": {
-          "description": "프레임 수. extract-frames 스크립트가 자동으로 채운다 (0 = 아직 없음). 긴 장면은 180장 안팎까지 — 모바일 전체 15MB 예산을 함께 본다",
+          "description": "프레임 수. extract-frames 스크립트가 자동으로 채운다 (0 = 아직 없음)",
           "type": "integer",
           "minimum": 0,
-          "maximum": 240
+          "maximum": 120
         },
         "ext": {
           "description": "확장자",

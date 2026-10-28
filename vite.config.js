@@ -76,11 +76,6 @@ function siteHead() {
   };
 }
 
-// 촬영 가이드 페이지는 "고객이 사진을 찍어 보내는" 서비스일 때만 필요하다.
-// site.json 의 pages.guide 가 false 면 빌드에서 빼서, 딜러 사이트에 엉뚱한 페이지가 같이 올라가지 않게 한다.
-const siteConfig = JSON.parse(readFileSync(resolve(import.meta.dirname, 'src/config/site.json'), 'utf8'));
-const withGuide = siteConfig.pages?.guide !== false;
-
 export default defineConfig({
   // 배포 위치가 하위 경로면 BASE_PATH=/mycarland/ 처럼 지정한다 (기본은 도메인 루트).
   base: (process.env.BASE_PATH ?? '/').trim(),
@@ -88,8 +83,8 @@ export default defineConfig({
   build: {
     rollupOptions: {
       input: {
-        main: resolve(import.meta.dirname, 'index.html'), // 소개 사이트
-        ...(withGuide ? { guide: resolve(import.meta.dirname, 'guide.html') } : {}), // 촬영 가이드 (선택)
+        main: resolve(import.meta.dirname, 'index.html'), // 차량 소개 사이트
+        guide: resolve(import.meta.dirname, 'guide.html'), // 촬영 가이드
       },
     },
   },
