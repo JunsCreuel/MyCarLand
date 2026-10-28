@@ -1,7 +1,7 @@
 /* 차량 소개 사이트 스타일
    색·글꼴은 main.js 가 site.json 값으로 :root 변수에 넣는다. 여기서는 변수만 쓴다. */
 :root {
-  --accent: #f5c518;
+  --accent: #f5c518; /* site.json 의 accentColor 가 덮어쓴다 */
   --bg: #0a0a0b;
   --fg: #f2f2f0;
   --fg-dim: color-mix(in srgb, var(--fg) 72%, transparent);
@@ -14,6 +14,10 @@
 
 * { box-sizing: border-box; }
 html { background: var(--bg); color-scheme: dark; }
+/* 한 화면씩 넘기기 모드: 브라우저 자체의 끌어서 스크롤·당겨서 새로고침·고무줄 튕김을 끄고
+   우리 스크립트가 직접 움직인다. 두 손가락 확대는 남겨 둔다 (접근성) */
+html.is-snap { overscroll-behavior: none; touch-action: pinch-zoom; }
+html.is-snap body { overscroll-behavior: none; }
 body {
   margin: 0;
   background: var(--bg);
@@ -271,7 +275,8 @@ img { display: block; max-width: 100%; }
 .cta__inner.pos-center { text-align: center; justify-self: center; }
 .cta__inner.pos-center .eyebrow { justify-content: center; }
 .cta__inner.pos-center .subcopy { margin-inline: auto; }
-.cta__inner .headline { font-size: clamp(80px, 17vw, 260px); }
+/* 화면 높이도 같이 본다: 가로로 넓고 낮은 노트북(1440×900)에서 헤드라인이 한 화면을 넘지 않게 (snap 은 한 화면 = 한 섹션) */
+.cta__inner .headline { font-size: clamp(64px, min(17vw, 22svh), 260px); }
 .cta__actions {
   margin-top: 48px;
   display: flex;
@@ -332,7 +337,8 @@ img { display: block; max-width: 100%; }
   grid-template-columns: clamp(72px, 8vw, 120px) 1fr;
   gap: 24px;
   align-items: baseline;
-  padding: 24px 0;
+  /* 낮은 화면에서는 단계 사이 간격을 줄여 섹션이 100svh 안에 들어오게 */
+  padding: clamp(12px, 2.2svh, 24px) 0;
   border-bottom: 1px solid color-mix(in srgb, var(--fg) 16%, transparent);
 }
 .step__num { font-family: var(--font-head); font-size: clamp(48px, 5.5vw, 88px); line-height: 0.9; color: var(--accent); }
@@ -375,6 +381,20 @@ img { display: block; max-width: 100%; }
   color: color-mix(in srgb, var(--fg) 50%, transparent);
 }
 .footer a { text-underline-offset: 3px; }
+
+/* ── 낮은 PC 화면 (1280×720 노트북 등) ──────────────────────
+   snap 모드에서는 섹션이 한 화면을 넘으면 휠을 한 번 더 굴려야 해서 어색하다.
+   높이가 낮을 때만 단계 목록과 문의 섹션을 촘촘하게 만든다. */
+@media (min-width: 768px) and (max-height: 860px) {
+  .scene--steps { padding-top: calc(var(--nav-h) + 12px); padding-bottom: 24px; row-gap: 20px; }
+  .scene--steps .headline { font-size: clamp(56px, 13svh, 112px); }
+  .step { padding: 10px 0; align-items: center; }
+  .step__num { font-size: clamp(40px, 7svh, 64px); }
+  .step__label { display: none; }
+  .step__text { margin-top: 4px; max-width: 48ch; }
+  .scene--cta { padding-top: calc(var(--nav-h) + 16px); padding-bottom: 32px; }
+  .cta__actions { margin-top: 28px; gap: 12px; }
+}
 
 /* ── 모바일 ─────────────────────────────────────────────── */
 @media (max-width: 767.98px) {
@@ -424,4 +444,14 @@ img { display: block; max-width: 100%; }
   .scene--steps .steps__head > *,
   .scene--steps .step,
   .scene--steps .steps__actions { transition: opacity 200ms linear; transform: none !important; }
+}
+
+/* 작은 폰(높이 760px 이하): 단계 섹션이 한 화면 안에 들어오게 더 줄인다 */
+@media (max-width: 767.98px) and (max-height: 760px) {
+  .scene--steps { padding-top: calc(var(--nav-h) + 8px); padding-bottom: 16px; gap: 10px; }
+  .scene--steps .headline { font-size: clamp(40px, 11vw, 52px); }
+  .scene--steps .subcopy { margin-top: 8px; font-size: 15px; }
+  .step { padding: 8px 0; }
+  .step__num { font-size: 32px; }
+  .step__text { font-size: 14px; }
 }

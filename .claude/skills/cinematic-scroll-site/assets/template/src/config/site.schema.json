@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "site.schema.json",
-  "title": "MyCarLand 고객 사이트 설정",
+  "title": "시네마틱 원페이지 고객 사이트 설정",
   "description": "고객 한 명당 하나. 이 파일과 public/frames/ 폴더만 바꾸면 새 사이트가 된다.",
   "type": "object",
   "required": [
@@ -162,6 +162,18 @@
           "description": "상단 문의 버튼 글자",
           "type": "string",
           "default": "문의하기"
+        }
+      }
+    },
+    "pages": {
+      "description": "함께 빌드할 보조 페이지. 고객 유형마다 켜고 끈다",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "guide": {
+          "description": "촬영 가이드 페이지(guide.html)를 빌드에 넣을지. 고객이 사진을 찍어 보내는 서비스일 때만 true (딜러·매장 소개면 보통 false)",
+          "type": "boolean",
+          "default": true
         }
       }
     },

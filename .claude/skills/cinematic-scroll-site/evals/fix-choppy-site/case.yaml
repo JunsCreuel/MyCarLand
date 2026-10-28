@@ -1,0 +1,5 @@
+schema_version: "1.1"
+name: fix-choppy-site
+expected_outcome: |
+  원인을 소재(빠른 카메라 움직임, 낮은 추출 fps, 구간 안의 컷)로 진단하고, 잔잔한 구간을 높은 fps 로 다시 뽑거나
+  자동 재생으로 바꿔 프레임 간 변화를 크게 줄인다. 첫 화면·전체 용량 예산을 지키고 빌드가 된다.

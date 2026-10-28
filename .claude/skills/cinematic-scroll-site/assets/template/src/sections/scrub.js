@@ -94,6 +94,34 @@ export function createScrub(section, site, { isFirst }) {
     return { el, init() {} };
   }
 
+  // 스크롤이 멈추면 두 장이 겹친 상태로 남지 않게, 가장 가까운 한 장으로 살짝 맞춰 준다.
+  // 겹쳐 그리기(크로스페이드)는 움직이는 동안에는 끊김을 가려 주지만, 멈춘 화면에서는
+  // 차와 차선이 이중으로 보여서(고스팅) 화질이 나빠 보인다.
+  const SETTLE_DELAY = 120; // 마지막 스크롤 갱신 후 이만큼 조용하면 "멈췄다"로 본다 (ms)
+  const SETTLE_TIME = 160; // 가까운 장으로 옮겨 가는 시간 (ms). 0.5장 이하라 눈에는 마무리 감속처럼 보인다
+  let settleTimer = 0;
+  let settleRaf = 0;
+  function cancelSettle() {
+    clearTimeout(settleTimer);
+    cancelAnimationFrame(settleRaf);
+    settleRaf = 0;
+  }
+  function scheduleSettle() {
+    cancelSettle();
+    settleTimer = setTimeout(() => {
+      const from = current;
+      const to = Math.round(current);
+      if (from === to) return;
+      const t0 = performance.now();
+      const step = (now) => {
+        const k = Math.min(1, (now - t0) / SETTLE_TIME);
+        show(from + (to - from) * (1 - (1 - k) ** 3));
+        settleRaf = k < 1 ? requestAnimationFrame(step) : 0;
+      };
+      settleRaf = requestAnimationFrame(step);
+    }, SETTLE_DELAY);
+  }
+
   // 한 화면 전부터 나머지 프레임을 받기 시작 (두 방식 공통)
   function watchNear() {
     ScrollTrigger.create({
@@ -120,7 +148,11 @@ export function createScrub(section, site, { isFirst }) {
           end: 'bottom bottom',
           onUpdate: (self) => {
             const p = self.progress;
-            if (count) show(p * (count - 1));
+            if (count) {
+              cancelSettle();
+              show(p * (count - 1));
+              scheduleSettle();
+            }
             copy.classList.toggle('is-visible', p >= copyFrom && p <= copyTo);
           },
         });

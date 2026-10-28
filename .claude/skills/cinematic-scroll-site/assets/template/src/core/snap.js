@@ -16,6 +16,9 @@ gsap.registerPlugin(Observer, ScrollToPlugin);
 const DURATION = 0.85; // 한 화면 넘어가는 시간(초)
 const COOLDOWN = 450; // 도착 후 입력을 무시하는 시간(ms) — 트랙패드 관성 대비
 const EDGE = 4; // 이 픽셀 이내면 "끝에 도달"로 본다
+const SWIPE_MIN = 60; // 터치: 이만큼(px) 이상 밀어야 다음 화면으로
+const FLICK_SPEED = 300; // 터치: 짧게 밀어도 이 속도(px/s) 이상으로 튕기면 다음 화면으로
+const FOLLOW = 0.4; // 끄는 동안 화면이 손가락을 따라오는 비율 (1 = 그대로, 작을수록 묵직)
 
 export function setupSnap(sectionEls) {
   const reduced = prefersReducedMotion();
@@ -38,17 +41,18 @@ export function setupSnap(sectionEls) {
     });
   }
 
-  // 지금 화면 맨 위가 속한 섹션 번호
-  function currentIndex() {
-    const y = window.scrollY + EDGE;
-    const i = sectionEls.findIndex((s) => s.offsetTop <= y && s.offsetTop + s.offsetHeight > y);
+  // 스크롤 위치 y 가 속한 섹션 번호 (기본은 지금 화면 맨 위)
+  function indexAt(y = window.scrollY) {
+    const top = y + EDGE;
+    const i = sectionEls.findIndex((s) => s.offsetTop <= top && s.offsetTop + s.offsetHeight > top);
     return i === -1 ? sectionEls.length - 1 : i;
   }
 
-  function step(dir) {
+  // dir: 1 다음 / -1 이전. fromY: 기준 위치 (터치로 끄는 중이면 끌기 시작한 위치)
+  function step(dir, fromY = window.scrollY) {
     if (busy || performance.now() < lockedUntil) return;
-    const y = window.scrollY;
-    const i = currentIndex();
+    const y = fromY;
+    const i = indexAt(y);
     const cur = sectionEls[i];
     const bottom = cur.offsetTop + cur.offsetHeight;
     if (dir > 0) {
@@ -60,18 +64,64 @@ export function setupSnap(sectionEls) {
     if (y - cur.offsetTop > EDGE) return goTo(Math.max(cur.offsetTop, y - vh()));
     const prev = sectionEls[i - 1];
     if (prev) goTo(prev.offsetTop + Math.max(0, prev.offsetHeight - vh()));
+    else goTo(y); // 맨 위에서 더 위로 밀면 제자리로
   }
 
-  // wheelSpeed -1: 휠을 아래로 굴리면 onUp 이 불린다 → "다음 화면"
-  // (터치는 손가락을 위로 밀면 onUp — 휠과 같은 방향이 되도록 맞춘 것)
+  // 휠: wheelSpeed -1 이라 아래로 굴리면 onUp → "다음 화면"
   Observer.create({
     target: window,
-    type: 'wheel,touch',
+    type: 'wheel',
     wheelSpeed: -1,
     tolerance: 12,
     preventDefault: true,
     onUp: () => step(1),
     onDown: () => step(-1),
+  });
+
+  // 터치: 살짝 닿기만 해도 한 화면이 넘어가면 "밀리는" 느낌이 난다.
+  // 그래서 끄는 동안은 화면이 손가락을 조금 따라오게 하고, 손을 뗄 때
+  // 충분히 밀었거나(SWIPE_MIN) 빠르게 튕겼을 때(FLICK_SPEED)만 넘기고, 아니면 제자리로 돌려놓는다.
+  let dragFrom = null; // 끌기 시작할 때의 스크롤 위치
+  let trail = []; // 최근 손가락 위치 기록 [{t, y}] — 손을 뗄 때 튕긴 속도를 직접 계산한다
+  // (Observer 의 velocityY 는 손을 떼는 순간 0 에 가깝게 나와서 빠른 튕김을 못 잡았다)
+  const flickSpeed = () => {
+    const now = performance.now();
+    const recent = trail.filter((p) => now - p.t < 100); // 마지막 0.1초
+    if (recent.length < 2) return 0;
+    const a = recent[0];
+    const b = recent[recent.length - 1];
+    return ((a.y - b.y) / Math.max(1, b.t - a.t)) * 1000; // 위로 튕기면 + (px/s)
+  };
+  Observer.create({
+    target: window,
+    type: 'touch',
+    preventDefault: true, // 브라우저 기본 스크롤을 막고 우리가 직접 움직인다
+    dragMinimum: 3,
+    onPress(self) {
+      dragFrom = busy ? null : window.scrollY;
+      trail = [{ t: performance.now(), y: self.y }];
+    },
+    onDrag(self) {
+      if (dragFrom === null) return;
+      trail.push({ t: performance.now(), y: self.y });
+      if (trail.length > 20) trail.shift();
+      if (reduced) return;
+      const moved = self.startY - self.y; // 손가락을 위로 밀면 +
+      window.scrollTo(0, Math.max(0, Math.min(maxY(), dragFrom + moved * FOLLOW)));
+    },
+    onRelease(self) {
+      if (dragFrom === null) return;
+      const from = dragFrom;
+      dragFrom = null;
+      const moved = self.startY - self.y;
+      const speed = flickSpeed();
+      if (Math.abs(moved) < 2) return; // 그냥 탭(버튼 누르기 등)
+      const dir =
+        moved > SWIPE_MIN || speed > FLICK_SPEED ? 1 : moved < -SWIPE_MIN || speed < -FLICK_SPEED ? -1 : 0;
+      lockedUntil = 0; // 손으로 한 동작이라 관성 대기 없이 바로 처리
+      if (dir) step(dir, from);
+      else goTo(from); // 덜 밀었으면 원래 자리로
+    },
   });
 
   window.addEventListener('keydown', (e) => {
@@ -90,7 +140,7 @@ export function setupSnap(sectionEls) {
   window.addEventListener('resize', () => {
     clearTimeout(resizeTimer);
     resizeTimer = setTimeout(() => {
-      if (!busy) window.scrollTo(0, sectionEls[currentIndex()].offsetTop);
+      if (!busy) window.scrollTo(0, sectionEls[indexAt()].offsetTop);
     }, 150);
   });
 
@@ -100,7 +150,7 @@ export function setupSnap(sectionEls) {
     },
     // 지금 보고 있는 섹션이 el 이면 다음 화면으로 (자동 재생이 끝났을 때 사용)
     nextFrom(el) {
-      if (busy || sectionEls[currentIndex()] !== el) return;
+      if (busy || sectionEls[indexAt()] !== el) return;
       lockedUntil = 0;
       step(1);
     },

@@ -26,12 +26,18 @@ python <skill>/scripts/inspect_footage.py raw/clip.mp4 --duration 2.5 --range 36
 ## 프레임 뽑기 — 템플릿 `scripts/extract-frames.mjs`
 
 ```bash
-node scripts/extract-frames.mjs raw/clip.mp4 hero --start 39.5 --duration 2.5 --fps 48 \
+node scripts/extract-frames.mjs raw/clip.mp4 hero --start 39.5 --duration 2 \
   --quality 82 --mobile-quality 78 --focus-x 0.5
 ```
 
+- 기본은 `--fps source`: 원본 프레임을 하나도 솎지 않고 쓰고, `mpdecimate`로 **연달아 똑같은 장만** 뺀다.
+  (30fps 영상을 60fps 로 저장한 파일은 같은 그림이 두 번씩 있어서 그대로 쓰면 멈칫멈칫한다)
+- 구간 안에 장면 전환이 있으면(ffmpeg `scdet`) **멈추고 컷 시각을 알려 준다.** 원래 버전은 아무 말 없이 컷을 섞어 뽑았다.
+- 서로 다른 장이 120장을 넘으면 fps 를 몰래 낮추지 않고 `--duration`을 몇 초로 줄이라고 알려 준다.
+  예전엔 조용히 fps 를 낮춰서 4.5초 → 24fps 처럼 툭툭 끊기는 결과가 나왔다. `--fps 48`처럼 숫자를 줄 수도 있다(24 미만 금지).
+
 - 출력: `public/frames/<id>/desktop/0001.webp…`(1920px), `mobile/`(828px, 가운데를 3:4로 자름). site.json 프레임 수 자동 갱신.
-- 섹션당 최대 120장. 넘으면 fps 를 자동으로 낮춘다 → **구간을 짧게, fps 는 높게**가 매끈하다 (원본 fps 이하).
+- 섹션당 최대 120장 → **구간을 짧게(2~2.5초), fps 는 원본 그대로**가 가장 매끈하다.
 - `--focus-x`: 모바일로 자를 때 차가 있는 가로 위치(0~1). 차가 오른쪽에 있으면 0.65~0.7.
 - 세로 영상이 따로 있으면 `--mobile-src`.
 - 결과 용량이 표로 나온다. 예산: 첫 화면 ≤ 2MB, 모바일 전체 ≤ 15MB. 넘으면 모바일 품질을 70~75로, 장면 수를 줄이거나 구간을 줄인다.

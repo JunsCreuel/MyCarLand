@@ -1,0 +1,7 @@
+schema_version: "1.1"
+name: new-dealer-site
+expected_outcome: |
+  site/ 에 빌드되는 원페이지가 있고, 영상은 WebP 이미지 시퀀스로 canvas 에 재생된다.
+  한 화면씩 넘기기 + 자동 재생, 모바일 프레임 별도, 첫 화면 2MB 이하, 가로 스크롤·콘솔 에러 없음,
+  CC BY 출처 표기, 카카오·전화 연락처, 동작 줄이기 대응.
+  (clip.webm 은 약 56MB 라 스킬 패키지에 넣지 않았다. 실행할 때 따로 준비한다.)

@@ -22,8 +22,12 @@ PW_CHROMIUM=<chromium 경로> python scripts/qa-site.py http://localhost:4173/ q
 snap/auto 모드는 추가로 확인:
 - 첫 장면 재생이 끝나면 다음 화면으로 넘어가는지 (`scrollY`가 다음 섹션 offsetTop 이 되는지 기다림)
 - PC 휠 한 번 = 정확히 한 화면, 위로 한 번 = 이전 화면
-- 모바일 스와이프는 CDP `Input.dispatchTouchEvent`로 touchStart → touchMove 여러 번 → touchEnd 를 보내야 테스트된다
-  (`synthesizeScrollGesture`는 Observer 의 touch 리스너에 잡히지 않았다)
+- 모바일 터치는 **페이지 안에서 `TouchEvent`를 직접 만들어 setTimeout 간격으로 dispatch** 해서 시험한다
+  (`new Touch({identifier, target, clientX, clientY})` → `touchstart` / `touchmove` 여러 번 / `touchend`).
+  CDP `Input.dispatchTouchEvent`는 이벤트 사이가 ~50ms 씩 벌어져 빠른 튕김이 느린 끌기로 둔갑하고,
+  `synthesizeScrollGesture`는 Observer 의 touch 리스너에 아예 안 잡혔다.
+- 이 스킬의 `scripts/touch_check.py <주소>`가 아래 6가지를 자동으로 확인한다: 20px 살짝 끌기 → 제자리 / 80px 끌기 → 다음 화면 / 30px 빠른 튕김 → 다음 화면 /
+  아래로 80px → 이전 화면 / 탭 → 그대로(버튼 눌림) / 첫 화면에서 아래로 당기기 → 제자리
 - 동작 줄이기(`reduced_motion="reduce"`)에서 자동으로 넘어가지 않고 에러가 없는지
 
 Playwright 가 내장 브라우저를 못 찾으면 `executable_path`로 설치된 Chromium 을 지정한다 (`playwright install` 금지 환경일 수 있음).

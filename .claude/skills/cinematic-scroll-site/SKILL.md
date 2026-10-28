@@ -49,13 +49,17 @@ site.json 설정과 스키마(`site.schema.json`)에 항목을 추가해서 다�
    git 을 쓰면 기능 단위로 커밋하고, 사용자가 브랜치 규칙을 정했으면 따른다.
 3. **소재 준비** → `references/asset-pipeline.md`
    - `python scripts/inspect_footage.py <영상> --duration 2.5` (이 스킬의 scripts/)로 컷 없는 가장 잔잔한 구간을 고른다
-   - `node scripts/extract-frames.mjs <영상> <섹션id> --start S --duration 2.5 --fps 48` (템플릿의 scripts/)
+   - `node scripts/extract-frames.mjs <영상> <섹션id> --start S --duration 2 --focus-x X` (템플릿의 scripts/, 원본 fps 그대로·컷 검사)
    - 컬러 피커 이미지: AI 색 변경 이미지 또는 `make-picker-images.mjs`
 4. **site.json 작성** — 섹션 순서·카피·재생 방식. `npm run check`가 오류 0개일 때까지.
    카피·레이아웃 원칙은 `references/design-direction.md`.
 5. **엔진을 고치거나 새 섹션 타입을 만들 때** → `references/engine.md`를 먼저 읽는다.
-6. **촬영 가이드**(고객이 사진을 찍어 보내는 서비스일 때) → `references/shooting-guide.md`
+6. **촬영 가이드**(고객이 사진을 찍어 보내는 서비스일 때) → `references/shooting-guide.md`.
+   딜러·매장 소개처럼 필요 없으면 `site.json`에 `"pages": {"guide": false}`, 컬러 피커처럼 맞지 않는 섹션은 뺀다.
+   snap 모드면 모든 섹션이 1440×900·1280×720·360×740 한 화면 안에 들어오는지 본다 (넘으면 휠을 한 번 더 굴려야 한다).
+   무료·CC 영상이면 `credits` 필수 (check-config 가 비어 있으면 경고).
 7. **QA** → `references/qa-and-deploy.md`. `qa-site.py`·`qa-guide.py`를 돌리고 스크린샷을 직접 본다.
+   snap 모드면 이 스킬의 `scripts/touch_check.py <주소>`로 모바일 터치 6가지도 확인한다.
 8. **배포** → 같은 문서. 커밋된 상태를 별도 worktree 에서 빌드해 올린다.
 9. **AI 장면 생성**(사용자가 요청할 때만, 비용 발생) → `references/ai-generation.md`.
    모델 ID·요금은 반드시 그때의 공식 문서로 확인한다. 이 문서의 표는 2026-10-27 기준 스냅샷일 뿐이다.
@@ -63,8 +67,13 @@ site.json 설정과 스키마(`site.schema.json`)에 항목을 추가해서 다�
 ## 꼭 기억할 것 (실제로 밟았던 함정)
 
 - **끊김의 원인은 대부분 소재다.** 빠른 드론 영상 4.5초를 24fps 로 뽑았더니 프레임 사이 변화가 커서 툭툭 끊겼다.
-  잔잔한 2.5초를 48fps 로 촘촘하게 뽑고(원본이 60fps 여서 가능), 렌더러가 이웃 두 장을 비율대로 겹쳐 그리게 해서
-  프레임 간 변화가 약 40% 줄었다. 그래도 끊기면 scroll 재생 대신 auto 재생 + snap 으로 바꾼다.
+  잔잔한 2~2.5초를 원본 fps 그대로(60fps) 뽑고, 렌더러가 이웃 두 장을 비율대로 겹쳐 그리게 해서
+  프레임 간 변화가 40~60% 줄었다. 구간 안의 **컷**도 큰 원인이다(extract-frames 가 이제 컷을 발견하면 멈춘다).
+  그래도 끊기면 scroll 재생 대신 auto 재생 + snap 으로 바꾼다.
+- **겹쳐 그리기는 멈춘 화면에서 고스팅을 만든다.** scroll 재생에서 스크롤을 멈추면 두 장이 반투명하게 겹친 채
+  남아 "화질이 별로"로 보였다 → 멈추면 가장 가까운 한 장으로 맞춘다(settle). 캔버스는 `imageSmoothingQuality='high'`.
+- **`<video>` 로 만들면 첫 화면이 무겁다.** 같은 요청을 스킬 없이 만든 비교 시험에서 `<video>` 방식은 모바일 첫 화면이
+  3.2MB 였다(프레임 방식 0.5MB). 장면을 "스크롤로 움직이는" 요구가 없어도 첫 화면 예산 때문에 프레임 방식을 쓴다.
 - **첫 화면 용량**: 첫 장면 프레임 120장을 페이지 열자마자 받으면 첫 화면이 4.5MB 가 된다. 첫 프레임만 preload 하고
   나머지는 `load` 이벤트 + idle 이후에 받는다. 자동 재생도 마찬가지 — 첫 장면은 처음부터 화면 안이라
   IntersectionObserver 가 즉시 "보임"을 알리므로 재생 시작 전에 페이지 로드를 기다려야 한다.
@@ -72,6 +81,9 @@ site.json 설정과 스키마(`site.schema.json`)에 항목을 추가해서 다�
 - **snap 스크롤**: GSAP Observer(`wheelSpeed: -1`, `preventDefault: true`) + ScrollToPlugin. 도착 후 ~450ms 입력 무시
   (트랙패드 관성 때문에 두세 화면을 건너뛴다). 화면보다 긴 섹션은 한 화면씩 내려가서 끝까지 본 뒤 넘긴다.
   모바일에서 섹션이 100svh 를 넘지 않게 여백을 줄이는 게 체감상 제일 좋다.
+- **터치는 휠과 따로 다룬다.** 처음엔 휠·터치를 한 Observer(tolerance 12px)로 묶었더니 폰에서 살짝 스치기만 해도
+  한 화면이 넘어가 "밀린다"는 말을 들었다. 끄는 동안 화면이 손가락을 따라오고, 60px 이상 밀거나 튕겼을 때만 넘기고,
+  아니면 제자리로 돌린다 (`snap.js`). 터치 시험은 CDP 말고 페이지 안 TouchEvent 로 (qa-and-deploy.md).
 - **`[hidden]`은 `display:flex` 같은 CSS 에 진다.** 숨긴 버튼 줄이 같이 보였다 → `[hidden]{display:none!important}`.
 - **GitHub Pages 경로는 대소문자를 가린다.** `/MyCarLand/` ≠ `/mycarland/`. git remote 가 소문자로 바뀌어 있어
   자산이 전부 404 났다 → package.json 의 `pagesBase`로 고정하고, 배포 후 실제 주소에서 자산 하나를 curl 로 확인한다.

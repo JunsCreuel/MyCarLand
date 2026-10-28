@@ -16,6 +16,8 @@
 - object-fit: cover 계산 후 `drawImage`. `next`가 있으면 `globalAlpha = mix`로 한 장 더 겹친다 (프레임 사이 크로스페이드).
 - devicePixelRatio 최대 2. ResizeObserver 로 리사이즈·회전 처리, 크기가 바뀌면 마지막 그림을 다시 그린다.
 - `alpha: false` 컨텍스트 → 합성 비용 감소.
+- 그릴 때마다 `imageSmoothingQuality = 'high'` — 기본값 'low'는 축소·확대 때 잔디·차선이 자글자글하다.
+  캔버스 크기가 바뀌면 설정이 초기화되므로 매 draw 에서 지정한다.
 
 ## 3. 장면 섹션 — `src/sections/scrub.js`
 
@@ -24,7 +26,7 @@
 
 | playback | 동작 | 섹션 높이 |
 |---|---|---|
-| `scroll` | ScrollTrigger progress × (count-1) = 위치(소수). `show(pos)`가 앞뒤 두 장을 섞어 그림. 글은 `copyRange` 구간에서만 보임 | `scrollLength` vh |
+| `scroll` | ScrollTrigger progress × (count-1) = 위치(소수). `show(pos)`가 앞뒤 두 장을 섞어 그림. 스크롤이 120ms 멈추면 160ms 동안 가장 가까운 한 장으로 맞춤(settle). 글은 `copyRange` 구간에서만 보임 | `scrollLength` vh |
 | `auto` | IntersectionObserver(threshold 0.6)로 들어오면 `frames.ready`를 기다린 뒤 rAF 로 `pos = 경과초 × fps` 재생. 끝나면 `onEnd`: hold/next/loop. 벗어나면 정지 | 100svh |
 
 - `playToken`: 재생을 다시 시작/정지할 때 번호를 올려서, 기다리던 이전 재생이 스스로 그만두게 한다 (await 사이의 경쟁 방지).
@@ -35,7 +37,15 @@
 
 - `site.scroll.mode`: `free` → Lenis(duration 1.1) + `lenis.on('scroll', ScrollTrigger.update)` + `gsap.ticker`로 Lenis 구동, `lagSmoothing(0)`.
   `snap` → `setupSnap(sectionEls)`.
-- snap: Observer(type `wheel,touch`, wheelSpeed -1, tolerance 12, preventDefault) → `step(±1)`.
+- snap 휠: Observer(type `wheel`, wheelSpeed -1, tolerance 12, preventDefault) → `step(±1)`.
+- snap 터치는 **따로** Observer(type `touch`, preventDefault, dragMinimum 3)로 처리한다. 휠과 같은 tolerance 로 묶으면
+  12px 만 스쳐도 한 화면이 넘어가 모바일에서 "살짝 건드렸는데 밀린다"는 피드백을 받았다.
+  - 끄는 동안 화면이 손가락을 `FOLLOW 0.4` 비율로 따라온다 (손에 붙어 있는 느낌)
+  - 손을 뗄 때 `SWIPE_MIN 60px` 이상 밀었거나 `FLICK_SPEED 300px/s` 이상으로 튕겼으면 `step(dir, 끌기 시작 위치)`,
+    아니면 끌기 시작 위치로 되돌린다. 2px 미만은 탭으로 보고 아무것도 안 한다.
+  - 튕긴 속도는 손가락 위치를 직접 기록해 **마지막 100ms** 로 계산한다. Observer 의 `velocityY`는 손을 떼는 순간 0 에 가까워 못 쓴다.
+  - `step()`은 지금 위치가 아니라 끌기 시작 위치 기준으로 다음/이전을 고른다 (끄는 중엔 이미 조금 움직였으므로).
+  - CSS `html.is-snap { overscroll-behavior:none; touch-action:pinch-zoom }` — 브라우저 고무줄·당겨서 새로고침을 끄되 확대는 남긴다.
   `gsap.to(window, {scrollTo})` 0.85s power3.inOut. 이동 중·도착 후 450ms 는 입력 무시.
   키보드 PageUp/Down/화살표/Space 지원 (입력창 포커스 중엔 무시). 리사이즈 시 현재 섹션 맨 위로 재정렬.
 - 컨트롤러 API: `goToSection(el)`(내부 #링크도 이걸로), `nextFrom(el)`(자동 재생 끝 → 다음 화면; 지금 보고 있는 섹션일 때만).
@@ -43,6 +53,8 @@
 
 ## 5. 기타 섹션
 
+- `site.json`의 `pages.guide: false` → 촬영 가이드(guide.html)를 빌드에서 뺀다 (딜러·매장 소개 사이트).
+  check-config 가 steps 버튼에 남은 `guide` 링크를 오류로 잡는다.
 - `steps.js`: 왼쪽 큰 헤드라인 + 오른쪽 큰 번호·가는 구분선 목록 (카드 3개 나열 금지). actions 의 href `guide`/`kakao` 토큰.
 - `picker.js`: 옵션마다 `<picture>`를 겹쳐 두고 선택된 것만 opacity 1 (350ms). 기본 옵션만 eager, 나머지는 섹션이 가까워지면.
   버튼은 `aria-pressed`. 모든 옵션 이미지는 같은 구도여야 자연스럽다.
