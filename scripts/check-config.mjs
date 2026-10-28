@@ -128,8 +128,21 @@ if (site) safely('site.json', () => {
     }
   }
 
+  // 가이드 페이지를 끈 사이트에서 "guide" 버튼을 쓰면 404 로 가는 링크가 생긴다
+  if (site.pages?.guide === false) {
+    for (const s of site.sections.filter((x) => x.type === 'steps')) {
+      if (s.actions?.some((a) => a.href === 'guide')) {
+        errors.push(`site.json 섹션 "${s.id}": pages.guide 가 false 인데 버튼 href 에 "guide"를 썼습니다.`);
+      }
+    }
+  }
+
   if (site.contact.kakaoOpenChat.includes('DEMO')) {
     warnings.push('site.json contact.kakaoOpenChat: 데모 링크입니다. 고객의 오픈채팅 주소로 바꿔 주세요.');
+  }
+  // 무료(CC) 영상은 출처 표기가 라이선스 조건이다. 고객이 직접 찍은 영상이면 무시해도 된다
+  if (!site.credits?.length) {
+    warnings.push('site.json credits: 영상 출처 표기가 없습니다. 무료·CC 영상을 썼다면 작가·라이선스를 꼭 적어 주세요.');
   }
   if (site.meta.ogImage && !publicFileExists(site.meta.ogImage)) {
     warnings.push(`site.json meta.ogImage: 파일이 없습니다 — public${site.meta.ogImage}`);
@@ -169,7 +182,8 @@ if (shots) safely('shots.json', () => {
 
   const required = shots.shots.filter((s) => s.required).length;
   const samples = shots.shots.filter((s) => publicFileExists(s.samplePhoto)).length;
-  if (samples < shots.shots.length) {
+  // 가이드 페이지를 끈 사이트(딜러 등)에서는 예시 사진이 없어도 상관없다
+  if (samples < shots.shots.length && site?.pages?.guide !== false) {
     warnings.push(`shots.json: 예시 사진 ${shots.shots.length - samples}장이 아직 없습니다 (가이드에는 자리표시자가 보입니다).`);
   }
   console.log(`촬영 컷 ${shots.shots.length}개 (필수 ${required}개)`);

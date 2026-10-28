@@ -165,6 +165,18 @@
         }
       }
     },
+    "pages": {
+      "description": "함께 빌드할 보조 페이지. 고객 유형마다 켜고 끈다",
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "guide": {
+          "description": "촬영 가이드 페이지(guide.html)를 빌드에 넣을지. 고객이 사진을 찍어 보내는 서비스일 때만 true (딜러·매장 소개면 보통 false)",
+          "type": "boolean",
+          "default": true
+        }
+      }
+    },
     "frames": {
       "description": "프레임 공통 설정",
       "type": "object",
