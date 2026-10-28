@@ -21,6 +21,9 @@ PW_CHROMIUM=<chromium 경로> python scripts/qa-site.py http://localhost:4173/ q
 
 snap/auto 모드는 추가로 확인:
 - 첫 장면 재생이 끝나면 다음 화면으로 넘어가는지 (`scrollY`가 다음 섹션 offsetTop 이 되는지 기다림)
+- 스크롤 재생 장면: 휠 몇 칸 → 섹션은 그대로·캔버스는 바뀜 / 계속 굴려 영상 끝 → 그대로 / 쉬고 한 칸 → 다음 화면 /
+  다음 화면 도착 직후 트랙패드 관성(작은 휠 신호 연속) → 한 화면만 / 위로 굴리면 되감기 → 처음에서 위로 → 이전 화면.
+  headless 에서는 휠 신호 간격이 150~190ms 로 벌어지므로 "한 동작" 판정 간격(300ms)보다 짧은지 확인하고 시험한다.
 - PC 휠 한 번 = 정확히 한 화면, 위로 한 번 = 이전 화면
 - 모바일 터치는 **페이지 안에서 `TouchEvent`를 직접 만들어 setTimeout 간격으로 dispatch** 해서 시험한다
   (`new Touch({identifier, target, clientX, clientY})` → `touchstart` / `touchmove` 여러 번 / `touchend`).

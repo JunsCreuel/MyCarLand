@@ -74,9 +74,8 @@
           "value": "Aqua Blue"
         }
       ],
-      "playback": "auto",
-      "fps": 30,
-      "onEnd": "next"
+      "playback": "scroll",
+      "scrollLength": 200
     },
     {
       "id": "process",
@@ -131,9 +130,8 @@
         "subcopy": "곧은 길보다 굽은 길. 이 차가 가장 빛나는 순간.",
         "position": "left"
       },
-      "playback": "auto",
-      "fps": 30,
-      "onEnd": "hold"
+      "playback": "scroll",
+      "scrollLength": 200
     },
     {
       "id": "finish",

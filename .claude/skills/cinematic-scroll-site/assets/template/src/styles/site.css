@@ -455,3 +455,39 @@ img { display: block; max-width: 100%; }
   .step__num { font-size: 32px; }
   .step__text { font-size: 14px; }
 }
+
+/* snap 모드에서 스크롤로 재생하는 장면: 딱 한 화면에 고정 (영상은 휠·스와이프 양만큼 넘어간다) */
+.scene--scrub.is-screen { height: 100vh; height: 100svh; }
+/* 첫 장면에서 "스크롤하면 움직인다"는 걸 알려 주는 표시. 조금이라도 재생하면 사라진다 */
+.scene__hint {
+  position: absolute;
+  left: 50%;
+  bottom: 28px;
+  translate: -50% 0;
+  display: grid;
+  justify-items: center;
+  gap: 10px;
+  font-size: 11px;
+  letter-spacing: 0.3em;
+  color: rgb(255 255 255 / 0.7);
+  pointer-events: none;
+  transition: opacity 0.4s ease;
+}
+.scene__hint::after {
+  content: '';
+  width: 1px;
+  height: 36px;
+  background: linear-gradient(to bottom, var(--accent), transparent);
+  animation: hint-drop 1.6s ease-in-out infinite;
+  transform-origin: top;
+}
+.scene__hint.is-hidden { opacity: 0; }
+@keyframes hint-drop {
+  0% { transform: scaleY(0); }
+  50% { transform: scaleY(1); }
+  100% { transform: scaleY(1); opacity: 0; }
+}
+/* 모바일은 글이 아래에 모여 있어서 표시를 오른쪽 아래로 비켜 둔다 */
+@media (max-width: 767.98px) {
+  .scene__hint { left: auto; right: 20px; translate: none; bottom: 24px; }
+}
