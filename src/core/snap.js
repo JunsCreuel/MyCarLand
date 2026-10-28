@@ -21,7 +21,7 @@ const EDGE = 4; // 이 픽셀 이내면 "끝에 도달"로 본다
 const SWIPE_MIN = 60; // 터치: 이만큼(px) 이상 밀어야 다음 화면으로
 const FLICK_SPEED = 300; // 터치: 짧게 밀어도 이 속도(px/s) 이상으로 튕기면 다음 화면으로
 const FOLLOW = 0.4; // 끄는 동안 화면이 손가락을 따라오는 비율 (1 = 그대로, 작을수록 묵직)
-const GESTURE_GAP = 180; // 휠 신호가 이만큼(ms) 끊기면 새 동작으로 본다
+const GESTURE_GAP = 300; // 휠 신호가 이만큼(ms) 끊기면 새 동작으로 본다 (마우스 휠을 천천히 돌려도 한 동작으로 묶이게)
 const WHEEL_MIN = 12; // 한 동작에서 이만큼(px) 이상 굴려야 다음 화면 (트랙패드 살짝 스침 무시)
 const TOUCH_GAIN = 2; // 터치로 영상을 넘길 때 손가락 이동량의 배율 (보통 세 번 쓸면 영상 끝)
 
@@ -89,9 +89,12 @@ export function setupSnap(sectionEls) {
       if (e.ctrlKey) return; // 트랙패드 확대(핀치)는 브라우저에 맡긴다
       e.preventDefault();
       const now = performance.now();
+      // 동작 구분은 이벤트가 "생긴" 시각으로 한다. 프레임을 받느라 메인 스레드가 바쁘면
+      // 처리 시각 간격이 벌어져 한 동작이 두 동작으로 쪼개져 보였다 (영상 끝에서 바로 다음 화면으로 넘어감)
+      const at = e.timeStamp;
       const dy = e.deltaY * (e.deltaMode === 1 ? 16 : e.deltaMode === 2 ? vh() : 1);
-      const fresh = now - lastWheel > GESTURE_GAP;
-      lastWheel = now;
+      const fresh = at - lastWheel > GESTURE_GAP;
+      lastWheel = at;
       if (!dy) return;
       const dir = dy > 0 ? 1 : -1;
       if (fresh) {
