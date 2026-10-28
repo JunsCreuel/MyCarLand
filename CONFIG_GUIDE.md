@@ -12,8 +12,9 @@
 1. `src/config/site.json`을 복사해 두고(이전 고객 백업) 내용을 고칩니다.
 2. 영상을 `raw/<고객>/`에 넣고 섹션마다 프레임을 뽑습니다. 프레임 수는 `site.json`에 자동 기록돼요.
    ```bash
-   node scripts/extract-frames.mjs raw/jun/hero.mp4 hero --fps 24
-   # 긴 영상의 일부만:   --start 38 --duration 4.5
+   node scripts/extract-frames.mjs raw/jun/hero.mp4 hero --start 38 --duration 2
+   # 원본 프레임을 솎지 않고 그대로 씁니다 (똑같은 장만 빼요). 120장이 넘으면 --duration 을 줄이라고 알려 줘요
+   # 구간 안에 장면 전환(컷)이 있으면 멈춥니다 — 컷 사이 구간을 고르세요
    # 모바일에서 차가 오른쪽에 있으면:   --focus-x 0.7   (세로로 자를 때 그 위치를 가운데로)
    # 세로 영상이 따로 있으면:   --mobile-src raw/jun/hero-vertical.mp4
    ```
