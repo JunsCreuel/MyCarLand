@@ -50,7 +50,7 @@
       "type": "scrub",
       "frames": {
         "folder": "hero",
-        "count": 120,
+        "count": 181,
         "ext": "webp",
         "alt": "가까이에서 돌아보는 911 타르가의 휠과 실내"
       },
@@ -76,7 +76,7 @@
         }
       ],
       "playback": "scroll",
-      "scrollLength": 200
+      "scrollLength": 450
     },
     {
       "id": "process",
@@ -120,7 +120,7 @@
       "type": "scrub",
       "frames": {
         "folder": "drive",
-        "count": 120,
+        "count": 180,
         "ext": "webp",
         "alt": "굽은 시골길을 달리는 911 타르가 두 대"
       },
@@ -132,7 +132,7 @@
         "position": "left"
       },
       "playback": "scroll",
-      "scrollLength": 200
+      "scrollLength": 450
     },
     {
       "id": "finish",
