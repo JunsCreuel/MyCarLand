@@ -26,7 +26,7 @@
 
 | playback | 동작 | 섹션 높이 |
 |---|---|---|
-| `scroll` + `scroll.mode: "snap"` (**기본**) | 섹션은 한 화면(100svh)에 고정. 섹션 요소에 `el.scrubber = { canAdvance(dir), advance(px) }`를 달아 두면 snap.js 가 휠·스와이프·키보드 입력을 먼저 영상 재생에 쓴다. `scrollLength`(화면 높이 %) 만큼 굴리면 영상 끝. 입력은 목표 위치만 옮기고 화면은 rAF 로 부드럽게 따라감(시간 상수 90ms), 멈추면 가까운 한 장으로 settle. 첫 장면엔 SCROLL 표시 | 100svh |
+| `scroll` + `scroll.mode: "snap"` (**기본**) | 섹션은 한 화면(100svh)에 고정. 섹션 요소에 `el.scrubber = { canAdvance(dir), advance(px) }`를 달아 두면 snap.js 가 휠·스와이프·키보드 입력을 먼저 영상 재생에 쓴다. `scrollLength`(화면 높이 %) 만큼 굴리면 영상 끝. 입력은 목표 위치만 옮기고 화면은 rAF 로 부드럽게 따라감(시간 상수 160ms — 90ms 였을 때 휠 칸마다 섰다 가서 끊겨 보였다), 멈추면 가까운 한 장으로 settle. 첫 장면엔 SCROLL 표시 | 100svh |
 | `scroll` + `free` | ScrollTrigger progress × (count-1) = 위치(소수). `show(pos)`가 앞뒤 두 장을 섞어 그림. 스크롤이 120ms 멈추면 160ms 동안 가장 가까운 한 장으로 맞춤(settle). 글은 `copyRange` 구간에서만 보임 | `scrollLength` vh |
 | `auto` | IntersectionObserver(threshold 0.6)로 들어오면 `frames.ready`를 기다린 뒤 rAF 로 `pos = 경과초 × fps` 재생. 끝나면 `onEnd`: hold/next/loop. 벗어나면 정지 | 100svh |
 
@@ -41,10 +41,12 @@
 - snap 휠: 직접 `wheel` 리스너(passive:false). 신호 간격 300ms 이하를 **한 동작**으로 묶는다 (간격은 `e.timeStamp`로 — 처리 시각으로 재면
   프레임 디코딩으로 메인 스레드가 바쁠 때 한 동작이 쪼개진다).
   - 지금 섹션의 `scrubber.canAdvance(dir)`이면 `advance(deltaY)` → 영상 재생
-  - 영상 끝에 닿은 동작은 거기서 멈춘다. 동작을 시작할 때 이미 끝이었으면(=손을 떼고 다시 굴림) 12px 이상에서 `step(dir)`
+  - `advance(px)`는 영상 끝을 넘어 남은 px 를 돌려준다. 남은 양이 쌓여 120px(OVERSCROLL)을 넘으면 그대로 `step(dir)` —
+    계속 굴리면 영상 끝 → 다음 화면으로 자연스럽게 이어진다. 동작 시작 때 이미 끝이었으면 12px 에서 바로 넘어간다.
+  - ⚠ 처음엔 "끝에 닿은 동작은 무시, 손 떼고 다시 굴려야 넘어감"으로 짰다가 "스크롤이 먹통이다가 갑자기 넘어간다"는 피드백을 받았다.
   - 이동 중·도착 후 450ms 안에 시작된 동작은 끝날 때까지 통째로 무시 (트랙패드 관성)
 - snap 터치에서 영상 장면은 첫 움직임 방향으로 모드를 정한다: 재생할 게 남았으면 'scrub'(손가락 이동 × 2 만큼 재생,
-  놓을 때 튕긴 속도 × 0.1 × 2 만큼 관성 재생, 화면 넘김 없음), 아니면 'page'(아래 따라오기·넘김).
+  영상 끝을 넘어 더 민 만큼 다음 화면이 따라 보이고 60px 넘게 밀었으면 넘김, 아니면 놓을 때 튕긴 속도 × 0.1 × 2 만큼 관성 재생), 아니면 'page'(아래 따라오기·넘김).
 - 키보드: 영상 장면이면 화면 높이의 절반씩 재생, 끝이면 다음 화면.
 - snap 터치는 **따로** Observer(type `touch`, preventDefault, dragMinimum 3)로 처리한다. 휠과 같은 tolerance 로 묶으면
   12px 만 스쳐도 한 화면이 넘어가 모바일에서 "살짝 건드렸는데 밀린다"는 피드백을 받았다.

@@ -155,7 +155,8 @@ export function createScrub(section, site, { isFirst }) {
     function loop(now) {
       const dt = Math.min(64, now - (prevTime || now));
       prevTime = now;
-      const k = 1 - Math.exp(-dt / 90); // 약 0.1초 만에 목표에 가까워지는 속도
+      // 시간 상수 160ms: 휠 한 칸씩(약 0.1초 간격) 오는 입력 사이를 이어서, 칸마다 섰다 갔다 하지 않게 한다
+      const k = 1 - Math.exp(-dt / 160);
       let pos = current + (target - current) * k;
       if (Math.abs(target - pos) < 0.01) pos = target;
       show(pos);
@@ -178,13 +179,15 @@ export function createScrub(section, site, { isFirst }) {
       clearTimeout(settleTimer);
       if (!raf) raf = requestAnimationFrame(loop);
     }
-    // snap.js 가 쓰는 인터페이스: 이 방향으로 더 재생할 게 남았나 / px 만큼 재생
+    // snap.js 가 쓰는 인터페이스: 이 방향으로 더 재생할 게 남았나 / px 만큼 재생하고 영상 끝을 넘어 남은 px 를 돌려줌
     el.scrubber = {
       canAdvance: (dir) => last > 0 && (dir > 0 ? target < last - 0.001 : target > 0.001),
       advance(px) {
-        target = Math.max(0, Math.min(last, target + (px / distance()) * last));
+        const want = target + (px / distance()) * last;
+        target = Math.max(0, Math.min(last, want));
         if (hint) hint.classList.toggle('is-hidden', target > 1);
         kick();
+        return last ? ((want - target) / last) * distance() : px;
       },
     };
     return {
