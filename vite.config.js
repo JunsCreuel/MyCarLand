@@ -59,7 +59,7 @@ function siteHead() {
           const digits = site.frames?.digits ?? 4;
           const mobileMax = (site.frames?.mobileMaxWidth ?? 768) - 0.02;
           const frame = (set) =>
-            url(`${site.frames?.basePath ?? '/frames'}/${first.frames.folder}/${set}/${'1'.padStart(digits, '0')}.${first.frames.ext ?? 'webp'}`);
+            url(`${site.frames?.basePath ?? '/frames'}/${first.frames.folder}/${set}/${'1'.padStart(digits, '0')}.${first.frames.ext ?? 'webp'}`) + `?v=${ASSET_V}`;
           tags.push(
             { tag: 'link', attrs: { rel: 'preload', as: 'image', href: frame('desktop'), media: `(min-width: ${mobileMax + 0.02}px)`, fetchpriority: 'high' } },
             { tag: 'link', attrs: { rel: 'preload', as: 'image', href: frame('mobile'), media: `(max-width: ${mobileMax}px)`, fetchpriority: 'high' } },
@@ -76,7 +76,11 @@ function siteHead() {
   };
 }
 
+// 빌드마다 바뀌는 이미지 버전 (asset() 와 첫 프레임 preload 가 같은 값을 써야 두 번 받지 않는다)
+const ASSET_V = Date.now().toString(36);
+
 export default defineConfig({
+  define: { __ASSET_V__: JSON.stringify(ASSET_V) },
   // 배포 위치가 하위 경로면 BASE_PATH=/mycarland/ 처럼 지정한다 (기본은 도메인 루트).
   base: (process.env.BASE_PATH ?? '/').trim(),
   plugins: [publicShots(), siteHead()],
